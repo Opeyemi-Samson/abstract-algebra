@@ -1,1 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homomorphisms — Math Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1228;
+    --paper: #f6f4fb;
+    --cream: #ede9f7;
+    --purple: #6b3fa0;
+    --purple-light: #ddd0f5;
+    --rust: #b03060;
+    --sage: #2a6644;
+    --muted: #6a5a80;
+    --border: #c8b8e0;
+    --gold: #9b6e10;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Source Serif 4', Georgia, serif; background: var(--paper); color: var(--ink); line-height: 1.75; font-size: 17px; }
 
+  .progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--purple), var(--rust)); width: 0%; z-index: 1000; transition: width 0.1s; }
+
+  header { background: var(--ink); color: var(--paper); padding: 3rem 2rem 2.5rem; text-align: center; position: relative; overflow: hidden; }
+  header::before { content:''; position:absolute; inset:0; background: repeating-linear-gradient(-45deg, transparent, transparent 40px, rgba(107,63,160,0.1) 40px, rgba(107,63,160,0.1) 41px); }
+  header .back-link { position: absolute; top: 1.2rem; left: 1.5rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.1em; color: rgba(246,244,251,0.5); text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
+  header .back-link:hover { color: var(--paper); }
+  header .subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; color: #b090e0; margin-bottom: 0.8rem; }
+  header h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 6vw, 3.8rem); font-weight: 700; line-height: 1.1; }
+  header h1 em { color: #b090e0; font-style: italic; }
+  header .tagline { margin-top: 1rem; color: #9080a8; font-size: 1rem; font-style: italic; }
+
+  nav { background: var(--cream); border-bottom: 2px solid var(--border); padding: 0 1rem; display: flex; overflow-x: auto; }
+  nav a { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); text-decoration: none; padding: 0.9rem 1.2rem; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; }
+  nav a:hover { color: var(--purple); border-bottom-color: var(--purple); }
+
+  .container { max-width: 860px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+  section { margin-bottom: 4rem; opacity: 0; transform: translateY(18px); transition: opacity 0.5s, transform 0.5s; }
+  section.visible { opacity: 1; transform: translateY(0); }
+  .section-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--purple); margin-bottom: 0.5rem; }
+  h2 { font-family: 'Playfair Display', serif; font-size: 1.9rem; font-weight: 700; border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
+  h3 { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--purple); margin: 1.8rem 0 0.7rem; }
+  p { margin-bottom: 1rem; }
+
+  .def-box { border-left: 4px solid var(--purple); background: linear-gradient(135deg, #f0eaf8, #ebe2f5); padding: 1.4rem 1.6rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; box-shadow: 2px 2px 12px rgba(0,0,0,0.05); }
+  .def-box .def-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--purple); margin-bottom: 0.5rem; }
+  .thm-box { border: 2px solid var(--ink); background: #f0eef5; padding: 1.4rem 1.6rem; margin: 1.5rem 0; border-radius: 8px; }
+  .thm-box .thm-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink); margin-bottom: 0.5rem; }
+  .eg-box { border-left: 4px solid var(--sage); background: #ecf5f0; padding: 1.4rem 1.6rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; }
+  .eg-box .eg-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage); margin-bottom: 0.5rem; }
+  .note-box { border-left: 4px solid var(--rust); background: #faeef2; padding: 1.2rem 1.4rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; font-size: 0.93rem; }
+  .math { font-family: 'IBM Plex Mono', monospace; background: rgba(0,0,0,0.06); padding: 0.1em 0.35em; border-radius: 3px; font-size: 0.92em; }
+  .math-block { font-family: 'IBM Plex Mono', monospace; background: var(--ink); color: #c4a8f0; padding: 1.2rem 1.6rem; border-radius: 8px; margin: 1.2rem 0; font-size: 0.9rem; line-height: 1.9; overflow-x: auto; }
+  .proof-toggle { background: none; border: 1.5px solid var(--border); border-radius: 6px; padding: 0.6rem 1.1rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; color: var(--muted); margin: 0.5rem 0 1rem; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem; }
+  .proof-toggle:hover { color: var(--purple); border-color: var(--purple); }
+  .proof-toggle .arrow { transition: transform 0.2s; display: inline-block; }
+  .proof-toggle.open .arrow { transform: rotate(90deg); }
+  .proof-body { display: none; background: #f5f2fb; border-left: 3px solid var(--border); padding: 1.2rem 1.5rem; border-radius: 0 8px 8px 0; margin-bottom: 1.5rem; font-size: 0.93rem; }
+  .proof-body.open { display: block; }
+  .quiz { background: var(--cream); border: 2px solid var(--border); border-radius: 12px; padding: 2rem; margin: 2rem 0; }
+  .quiz h3 { margin-top:0; color: var(--ink); font-size: 1.1rem; }
+  .quiz-q { margin-bottom: 1rem; }
+  .quiz-options { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+  .quiz-option { background: white; border: 1.5px solid var(--border); border-radius: 6px; padding: 0.75rem 1rem; cursor: pointer; font-family: 'Source Serif 4', serif; font-size: 0.93rem; text-align: left; transition: all 0.15s; color: var(--ink); }
+  .quiz-option:hover { border-color: var(--purple); background: #f4eeff; }
+  .quiz-option.correct { border-color: var(--sage); background: #e8f5eb; color: var(--sage); }
+  .quiz-option.wrong { border-color: var(--rust); background: #fde8ee; color: var(--rust); }
+  .quiz-feedback { display: none; padding: 0.8rem 1rem; border-radius: 6px; font-size: 0.9rem; margin-top: 0.5rem; }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct { background: #e8f5eb; color: var(--sage); border-left: 3px solid var(--sage); }
+  .quiz-feedback.wrong { background: #fde8ee; color: var(--rust); border-left: 3px solid var(--rust); }
+  .cheatsheet { background: var(--ink); color: var(--paper); border-radius: 12px; padding: 2rem; margin: 2rem 0; }
+  .cheatsheet h3 { color: #c4a8f0; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase; margin: 0 0 1.2rem; }
+  .cs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media(max-width:600px){.cs-grid{grid-template-columns:1fr;}}
+  .cs-item { background: rgba(255,255,255,0.05); border-radius: 6px; padding: 1rem; }
+  .cs-item .cs-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: #b090e0; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .cs-item .cs-body { color: #b0a0c8; font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; line-height: 1.6; }
+  ul { padding-left: 1.5rem; margin-bottom: 1rem; }
+  li { margin-bottom: 0.3rem; }
+  hr.divider { border:none; border-top: 2px solid var(--border); margin: 2.5rem 0; }
+
+  /* Types table */
+  .type-table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem; }
+  .type-table th { background: var(--ink); color: #c4a8f0; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.7rem 1rem; text-align: left; }
+  .type-table td { padding: 0.8rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .type-table tr:nth-child(even) td { background: var(--cream); }
+  .type-table td:first-child { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; color: var(--purple); font-weight: 500; }
+
+  /* Diagram */
+  .diagram { background: var(--ink); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; text-align: center; }
+  .diagram svg text { font-family: 'IBM Plex Mono', monospace; }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<header>
+  <a href="../index.html" class="back-link">← Back to Notes</a>
+  <div class="subtitle">Abstract Algebra · Group Theory</div>
+  <h1>Group <em>Homomorphisms</em></h1>
+  <p class="tagline">Structure-preserving maps between groups</p>
+</header>
+
+<nav>
+  <a href="#definition">Definition</a>
+  <a href="#properties">Properties</a>
+  <a href="#types">Types</a>
+  <a href="#kernel-image">Kernel & Image</a>
+  <a href="#examples">Examples</a>
+  <a href="#automorphisms">Automorphisms</a>
+  <a href="#quiz">Quiz</a>
+</nav>
+
+<div class="container">
+
+  <section id="definition">
+    <div class="section-label">§ 1</div>
+    <h2>Definition</h2>
+    <p>A group homomorphism is a map between two groups that <em>respects the group structure</em> — it interacts compatibly with the group operations. This makes it the natural notion of "map" in group theory, just as continuous maps are the natural maps in topology or linear maps in linear algebra.</p>
+
+    <div class="def-box">
+      <div class="def-label">Definition — Group Homomorphism</div>
+      <p>Let (G, ·) and (H, ★) be groups. A function φ : G → H is a <strong>group homomorphism</strong> if for all a, b ∈ G:</p>
+    </div>
+
+    <div class="math-block">
+  φ(a · b) = φ(a) ★ φ(b)
+    </div>
+
+    <p>In words: the image of a product equals the product of the images. The map φ does not need to be bijective — it just needs to preserve the operation.</p>
+
+    <div class="note-box">
+      <strong>Intuition:</strong> A homomorphism is a "shadow" of G in H — it may collapse some structure (several elements might map to the same image), but whatever structure survives in the image is an accurate reflection of G's structure.
+    </div>
+  </section>
+
+  <section id="properties">
+    <div class="section-label">§ 2</div>
+    <h2>Basic Properties</h2>
+
+    <div class="thm-box">
+      <div class="thm-label">Theorem — Elementary Properties</div>
+      <p>Let φ : G → H be a group homomorphism. Then:</p>
+      <ol style="padding-left:1.5rem; margin:0.5rem 0;">
+        <li>φ(e_G) = e_H &nbsp; (identity maps to identity)</li>
+        <li>φ(g⁻¹) = φ(g)⁻¹ &nbsp; (inverse maps to inverse)</li>
+        <li>φ(gⁿ) = φ(g)ⁿ &nbsp; for all n ∈ ℤ</li>
+        <li>If |g| is finite, then |φ(g)| divides |g|</li>
+        <li>If K ≤ G, then φ(K) ≤ H &nbsp; (subgroups map to subgroups)</li>
+        <li>If L ≤ H, then φ⁻¹(L) ≤ G &nbsp; (preimages of subgroups are subgroups)</li>
+      </ol>
+    </div>
+
+    <button class="proof-toggle" onclick="toggleProof('pf-props')"><span class="arrow">▶</span> Proofs of (1) and (2)</button>
+    <div class="proof-body" id="pf-props">
+      <strong>(1):</strong> φ(e_G) = φ(e_G · e_G) = φ(e_G) · φ(e_G). Cancelling φ(e_G) on the left gives e_H = φ(e_G). ∎<br><br>
+      <strong>(2):</strong> φ(g) · φ(g⁻¹) = φ(g · g⁻¹) = φ(e_G) = e_H. So φ(g⁻¹) is the inverse of φ(g), i.e. φ(g⁻¹) = φ(g)⁻¹. ∎<br><br>
+      <strong>(4):</strong> Let n = |g|, so gⁿ = e. Then φ(g)ⁿ = φ(gⁿ) = φ(e) = e. So the order of φ(g) divides n = |g|.
+    </div>
+
+    <h3>Composition of Homomorphisms</h3>
+    <p>If φ : G → H and ψ : H → K are homomorphisms, then ψ ∘ φ : G → K is also a homomorphism:</p>
+    <div class="math-block">
+  (ψ ∘ φ)(ab) = ψ(φ(ab)) = ψ(φ(a)φ(b)) = ψ(φ(a))ψ(φ(b)) = (ψ∘φ)(a)(ψ∘φ)(b)
+    </div>
+    <p>This means groups and homomorphisms form a <strong>category</strong>, denoted <strong>Grp</strong>.</p>
+  </section>
+
+  <section id="types">
+    <div class="section-label">§ 3</div>
+    <h2>Types of Homomorphisms</h2>
+
+    <table class="type-table">
+      <tr><th>Name</th><th>Condition</th><th>Meaning</th></tr>
+      <tr><td>Homomorphism</td><td>φ(ab) = φ(a)φ(b)</td><td>Structure-preserving map (base case)</td></tr>
+      <tr><td>Monomorphism</td><td>φ injective (one-to-one)</td><td>Embeds G into H; G is isomorphic to a subgroup of H</td></tr>
+      <tr><td>Epimorphism</td><td>φ surjective (onto)</td><td>H is a homomorphic image of G</td></tr>
+      <tr><td>Isomorphism</td><td>φ bijective</td><td>G and H are structurally identical; write G ≅ H</td></tr>
+      <tr><td>Endomorphism</td><td>φ : G → G (same group)</td><td>G maps to itself</td></tr>
+      <tr><td>Automorphism</td><td>φ : G → G bijective</td><td>A symmetry of G itself</td></tr>
+    </table>
+
+    <div class="thm-box">
+      <div class="thm-label">Theorem — Injective ↔ Trivial Kernel</div>
+      <p>A homomorphism φ : G → H is injective if and only if ker(φ) = {e_G}.</p>
+    </div>
+
+    <button class="proof-toggle" onclick="toggleProof('pf-inj')"><span class="arrow">▶</span> Proof</button>
+    <div class="proof-body" id="pf-inj">
+      <strong>(⟹):</strong> If φ is injective and g ∈ ker(φ), then φ(g) = e_H = φ(e_G), so g = e_G. Thus ker(φ) = {e_G}.<br><br>
+      <strong>(⟸):</strong> Suppose ker(φ) = {e_G}. If φ(a) = φ(b), then φ(ab⁻¹) = φ(a)φ(b)⁻¹ = e_H, so ab⁻¹ ∈ ker(φ) = {e_G}, giving a = b. ∎
+    </div>
+  </section>
+
+  <section id="kernel-image">
+    <div class="section-label">§ 4</div>
+    <h2>Kernel and Image</h2>
+
+    <div class="def-box">
+      <div class="def-label">Definition — Kernel and Image</div>
+      <p>For φ : G → H:</p>
+    </div>
+    <div class="math-block">
+  ker(φ)  =  { g ∈ G : φ(g) = e_H }  ≤ G
+
+  Im(φ)   =  { φ(g) : g ∈ G }  ≤ H
+    </div>
+
+    <div class="thm-box">
+      <div class="thm-label">Theorem</div>
+      <p>For any homomorphism φ : G → H:</p>
+      <ul style="margin:0.5rem 0 0 1.5rem;">
+        <li>ker(φ) is a <strong>normal</strong> subgroup of G</li>
+        <li>Im(φ) is a subgroup of H (not necessarily normal)</li>
+        <li>For any a ∈ G, the fiber φ⁻¹({φ(a)}) = a·ker(φ) — the fiber over any point is a coset of the kernel</li>
+      </ul>
+    </div>
+
+    <button class="proof-toggle" onclick="toggleProof('pf-kern')"><span class="arrow">▶</span> Proof: ker(φ) ◁ G</button>
+    <div class="proof-body" id="pf-kern">
+      We already know ker(φ) ≤ G. To show normality, take g ∈ G, n ∈ ker(φ):<br><br>
+      φ(gng⁻¹) = φ(g)·φ(n)·φ(g⁻¹) = φ(g)·e_H·φ(g)⁻¹ = e_H.<br><br>
+      So gng⁻¹ ∈ ker(φ), proving ker(φ) ◁ G. ∎
+    </div>
+
+    <h3>Fibers are Cosets</h3>
+    <p>A crucial structural insight: all elements mapping to the same value form a coset of the kernel. If φ(a) = h, then:</p>
+    <div class="math-block">
+  φ⁻¹({h}) = { g ∈ G : φ(g) = h }
+            = { g ∈ G : φ(g) = φ(a) }
+            = { g ∈ G : φ(a⁻¹g) = e }
+            = { g ∈ G : a⁻¹g ∈ ker(φ) }
+            = a · ker(φ)
+    </div>
+    <p>This is why the First Isomorphism Theorem works: G/ker(φ) literally consists of these fibers, and they are in bijection with Im(φ).</p>
+  </section>
+
+  <section id="examples">
+    <div class="section-label">§ 5</div>
+    <h2>Important Examples</h2>
+
+    <div class="eg-box">
+      <div class="eg-label">Example 1 — Determinant</div>
+      <p>φ : GL(n, ℝ) → (ℝ*, ×), φ(A) = det(A). This is a surjective homomorphism because det(AB) = det(A)det(B). The kernel is SL(n, ℝ) = {A : det(A) = 1}. So SL(n, ℝ) ◁ GL(n, ℝ) and GL(n,ℝ)/SL(n,ℝ) ≅ ℝ*.</p>
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Example 2 — Sign of a Permutation</div>
+      <p>sgn : Sₙ → {±1} ≅ ℤ₂, sgn(σ) = +1 if σ is even, −1 if odd. This is a surjective homomorphism and ker(sgn) = Aₙ (the alternating group). So Aₙ ◁ Sₙ and Sₙ/Aₙ ≅ ℤ₂.</p>
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Example 3 — Exponential Map</div>
+      <p>φ : (ℝ, +) → (ℝ₊*, ×), φ(x) = eˣ. This is an isomorphism: e^{x+y} = eˣ·eʸ, and it is bijective. So (ℝ, +) ≅ (ℝ₊*, ×) as groups.</p>
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Example 4 — Modular Reduction</div>
+      <p>φ : ℤ → ℤₙ, φ(k) = k mod n. This is a surjective homomorphism with kernel nℤ. By the First Isomorphism Theorem: ℤ/nℤ ≅ ℤₙ.</p>
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Example 5 — Trivial and Identity Homomorphisms</div>
+      <p>For any groups G, H: the <strong>trivial homomorphism</strong> φ(g) = e_H for all g, with ker = G. The <strong>identity</strong> id_G : G → G, id(g) = g, is an automorphism with ker = {e}.</p>
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Example 6 — Cayley's Theorem</div>
+      <p>Every group G embeds (injects) into a symmetric group. The map φ : G → Sym(G) defined by φ(g) = (left multiplication by g) is an injective homomorphism. This means every abstract group is concretely realised as a group of permutations.</p>
+    </div>
+  </section>
+
+  <section id="automorphisms">
+    <div class="section-label">§ 6</div>
+    <h2>Automorphisms</h2>
+
+    <p>An <strong>automorphism</strong> of G is a bijective homomorphism G → G — a symmetry of the group itself. The set of all automorphisms forms a group under composition.</p>
+
+    <div class="def-box">
+      <div class="def-label">Definition — Automorphism Group</div>
+      <p>Aut(G) = {φ : G → G | φ is an automorphism}, with composition as the group operation.</p>
+    </div>
+
+    <h3>Inner Automorphisms</h3>
+    <p>For each g ∈ G, conjugation by g defines an automorphism:</p>
+    <div class="math-block">
+  φ_g : G → G,    φ_g(x) = gxg⁻¹
+
+  φ_g is a bijective homomorphism (its inverse is φ_{g⁻¹}).
+    </div>
+
+    <p>Automorphisms of this form are called <strong>inner automorphisms</strong>. The set of all inner automorphisms is:</p>
+    <div class="math-block">
+  Inn(G) = { φ_g : g ∈ G } ◁ Aut(G)
+    </div>
+
+    <div class="thm-box">
+      <div class="thm-label">Theorem</div>
+      <p>Inn(G) ◁ Aut(G), and there is an isomorphism Inn(G) ≅ G/Z(G), where Z(G) is the center of G.</p>
+    </div>
+
+    <p>The <strong>outer automorphism group</strong> is Out(G) = Aut(G)/Inn(G). Outer automorphisms are the "exotic" symmetries of G that cannot be realised by conjugation.</p>
+
+    <div class="eg-box">
+      <div class="eg-label">Example — Aut(ℤₙ) ≅ (ℤₙ)* </div>
+      <p>Every automorphism of ℤₙ = ⟨1⟩ is determined by where 1 goes. We need φ(1) to generate ℤₙ, so φ(1) = k where gcd(k, n) = 1. Therefore Aut(ℤₙ) ≅ (ℤₙ)* (the group of units mod n), which has order φ(n) (Euler's totient).</p>
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Example — Aut(S₃) ≅ S₃</div>
+      <p>S₃ has trivial center, so Inn(S₃) ≅ S₃/Z(S₃) = S₃/{e} ≅ S₃. One can check all automorphisms of S₃ are inner, so Aut(S₃) ≅ S₃ (S₃ is a "complete" group).</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="quiz">
+    <div class="section-label">§ 7</div>
+    <h2>Check Your Understanding</h2>
+
+    <div class="quiz">
+      <h3>Question 1</h3>
+      <p class="quiz-q">φ : G → H is a homomorphism with ker(φ) = {e}. What can you conclude?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this,false,'q1','Surjectivity requires Im(φ) = H, which is separate from kernel triviality.')">φ is surjective</button>
+        <button class="quiz-option" onclick="answer(this,true,'q1','Correct! ker(φ) = {e} is exactly the condition for injectivity.')">φ is injective</button>
+        <button class="quiz-option" onclick="answer(this,false,'q1','Bijective = injective + surjective. Trivial kernel only gives injectivity.')">φ is an isomorphism</button>
+        <button class="quiz-option" onclick="answer(this,false,'q1','G ≅ H requires bijectivity, not just injectivity.')">G ≅ H</button>
+      </div>
+      <div class="quiz-feedback" id="q1-feedback"></div>
+    </div>
+
+    <div class="quiz">
+      <h3>Question 2</h3>
+      <p class="quiz-q">If φ : G → H is a homomorphism and g ∈ G has order 6, what are the possible orders of φ(g) in H?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this,false,'q2','The order of φ(g) divides 6. Divisors of 6 are 1, 2, 3, 6 — not arbitrary.')">Any positive integer</button>
+        <button class="quiz-option" onclick="answer(this,false,'q2','The order must divide 6, so 4 is not possible (4 does not divide 6).')">1, 2, 3, 4, or 6</button>
+        <button class="quiz-option" onclick="answer(this,true,'q2','Correct! |φ(g)| divides |g| = 6. The divisors of 6 are 1, 2, 3, 6.')">1, 2, 3, or 6</button>
+        <button class="quiz-option" onclick="answer(this,false,'q2','The order could also be 1 (if φ(g) = e) or other divisors of 6.')">Exactly 6</button>
+      </div>
+      <div class="quiz-feedback" id="q2-feedback"></div>
+    </div>
+
+    <div class="quiz">
+      <h3>Question 3</h3>
+      <p class="quiz-q">Aut(ℤ₅) is isomorphic to which group?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this,false,'q3','ℤ₅ has φ(5) = 4 automorphisms, not 5.')">ℤ₅</button>
+        <button class="quiz-option" onclick="answer(this,true,'q3','Correct! Aut(ℤ₅) ≅ (ℤ₅)* which has order φ(5) = 4 and is cyclic, so ≅ ℤ₄.')">ℤ₄</button>
+        <button class="quiz-option" onclick="answer(this,false,'q3','ℤ₂×ℤ₂ has order 4 but is not cyclic. (ℤ₅)* is cyclic.')">ℤ₂ × ℤ₂</button>
+        <button class="quiz-option" onclick="answer(this,false,'q3','S₃ has order 6, but Aut(ℤ₅) has order 4.')">S₃</button>
+      </div>
+      <div class="quiz-feedback" id="q3-feedback"></div>
+    </div>
+  </section>
+
+  <div class="cheatsheet">
+    <h3>Homomorphisms — Quick Reference</h3>
+    <div class="cs-grid">
+      <div class="cs-item"><div class="cs-title">Definition</div><div class="cs-body">φ(ab) = φ(a)φ(b) for all a,b ∈ G</div></div>
+      <div class="cs-item"><div class="cs-title">φ(e_G) = e_H</div><div class="cs-body">Identity always maps to identity</div></div>
+      <div class="cs-item"><div class="cs-title">φ(g⁻¹) = φ(g)⁻¹</div><div class="cs-body">Inverses preserved</div></div>
+      <div class="cs-item"><div class="cs-title">|φ(g)| divides |g|</div><div class="cs-body">Orders can only shrink</div></div>
+      <div class="cs-item"><div class="cs-title">ker(φ) ◁ G</div><div class="cs-body">Kernel is always normal</div></div>
+      <div class="cs-item"><div class="cs-title">Injective ↔ ker={e}</div><div class="cs-body">Trivial kernel = embedding</div></div>
+      <div class="cs-item"><div class="cs-title">Fibers = Cosets</div><div class="cs-body">φ⁻¹({φ(a)}) = a·ker(φ)</div></div>
+      <div class="cs-item"><div class="cs-title">Aut(G)</div><div class="cs-body">Inn(G) ≅ G/Z(G) ◁ Aut(G)</div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+window.addEventListener('scroll', () => {
+  const s = document.body.scrollTop || document.documentElement.scrollTop;
+  const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  document.getElementById('progressBar').style.width = (s/h*100) + '%';
+});
+const obs = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('visible'); }), {threshold:0.08});
+document.querySelectorAll('section').forEach(s => obs.observe(s));
+function toggleProof(id) {
+  const b = document.getElementById(id); const btn = b.previousElementSibling;
+  b.classList.toggle('open'); btn.classList.toggle('open');
+}
+function answer(btn, correct, qid, msg) {
+  document.getElementById(qid).querySelectorAll('.quiz-option').forEach(b => b.disabled = true);
+  btn.classList.add(correct ? 'correct' : 'wrong');
+  const fb = document.getElementById(qid+'-feedback');
+  fb.textContent = (correct?'✓ ':'✗ ')+msg;
+  fb.className = 'quiz-feedback show '+(correct?'correct':'wrong');
+}
+</script>
+</body>
+</html>
