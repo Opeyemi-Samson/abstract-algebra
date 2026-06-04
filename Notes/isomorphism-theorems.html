@@ -1,1 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Isomorphism Theorems — Math Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f1f10;
+    --paper: #f4fbf4;
+    --cream: #e6f2e7;
+    --green: #1e6b3a;
+    --green-light: #c8e8d0;
+    --rust: #9b3a1a;
+    --blue: #2a4a8a;
+    --muted: #4a6a50;
+    --border: #b0d0b8;
+    --gold: #7a5a10;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Source Serif 4', Georgia, serif; background: var(--paper); color: var(--ink); line-height: 1.75; font-size: 17px; }
+  .progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--green), var(--blue)); width: 0%; z-index: 1000; transition: width 0.1s; }
+  header { background: var(--ink); color: var(--paper); padding: 3rem 2rem 2.5rem; text-align: center; position: relative; overflow: hidden; }
+  header::before { content:''; position:absolute; inset:0; background: repeating-linear-gradient(30deg, transparent, transparent 45px, rgba(30,107,58,0.1) 45px, rgba(30,107,58,0.1) 46px); }
+  header .back-link { position: absolute; top: 1.2rem; left: 1.5rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.1em; color: rgba(244,251,244,0.5); text-decoration: none; text-transform: uppercase; transition: color 0.2s; }
+  header .back-link:hover { color: var(--paper); }
+  header .subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; color: #80c890; margin-bottom: 0.8rem; }
+  header h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5.5vw, 3.6rem); font-weight: 700; line-height: 1.1; }
+  header h1 em { color: #80c890; font-style: italic; }
+  header .tagline { margin-top: 1rem; color: #708878; font-size: 1rem; font-style: italic; }
+  nav { background: var(--cream); border-bottom: 2px solid var(--border); padding: 0 1rem; display: flex; overflow-x: auto; }
+  nav a { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); text-decoration: none; padding: 0.9rem 1.2rem; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s; }
+  nav a:hover { color: var(--green); border-bottom-color: var(--green); }
+  .container { max-width: 860px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+  section { margin-bottom: 4rem; opacity: 0; transform: translateY(18px); transition: opacity 0.5s, transform 0.5s; }
+  section.visible { opacity: 1; transform: translateY(0); }
+  .section-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--green); margin-bottom: 0.5rem; }
+  h2 { font-family: 'Playfair Display', serif; font-size: 1.9rem; font-weight: 700; border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1.5rem; }
+  h3 { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--green); margin: 1.8rem 0 0.7rem; }
+  p { margin-bottom: 1rem; }
+  .def-box { border-left: 4px solid var(--green); background: linear-gradient(135deg, #ebf5ec, #e2f0e4); padding: 1.4rem 1.6rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; box-shadow: 2px 2px 12px rgba(0,0,0,0.05); }
+  .def-box .def-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--green); margin-bottom: 0.5rem; }
+  .thm-box { border: 2px solid var(--green); background: #f0f8f1; padding: 1.4rem 1.6rem; margin: 1.5rem 0; border-radius: 8px; }
+  .thm-box .thm-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--green); margin-bottom: 0.5rem; }
+  .eg-box { border-left: 4px solid var(--blue); background: #edf0f8; padding: 1.4rem 1.6rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; }
+  .eg-box .eg-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--blue); margin-bottom: 0.5rem; }
+  .note-box { border-left: 4px solid var(--rust); background: #faede8; padding: 1.2rem 1.4rem; margin: 1.5rem 0; border-radius: 0 8px 8px 0; font-size: 0.93rem; }
+  .math { font-family: 'IBM Plex Mono', monospace; background: rgba(0,0,0,0.06); padding: 0.1em 0.35em; border-radius: 3px; font-size: 0.92em; }
+  .math-block { font-family: 'IBM Plex Mono', monospace; background: var(--ink); color: #90d8a0; padding: 1.2rem 1.6rem; border-radius: 8px; margin: 1.2rem 0; font-size: 0.9rem; line-height: 1.9; overflow-x: auto; }
+  .proof-toggle { background: none; border: 1.5px solid var(--border); border-radius: 6px; padding: 0.6rem 1.1rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; color: var(--muted); margin: 0.5rem 0 1rem; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem; }
+  .proof-toggle:hover { color: var(--green); border-color: var(--green); }
+  .proof-toggle .arrow { transition: transform 0.2s; display: inline-block; }
+  .proof-toggle.open .arrow { transform: rotate(90deg); }
+  .proof-body { display: none; background: #f0f8f1; border-left: 3px solid var(--border); padding: 1.2rem 1.5rem; border-radius: 0 8px 8px 0; margin-bottom: 1.5rem; font-size: 0.93rem; }
+  .proof-body.open { display: block; }
+  .quiz { background: var(--cream); border: 2px solid var(--border); border-radius: 12px; padding: 2rem; margin: 2rem 0; }
+  .quiz h3 { margin-top:0; color: var(--ink); font-size: 1.1rem; }
+  .quiz-q { margin-bottom: 1rem; }
+  .quiz-options { display: flex; flex-direction: column; gap: 0.5rem; }
+  .quiz-option { background: white; border: 1.5px solid var(--border); border-radius: 6px; padding: 0.75rem 1rem; cursor: pointer; font-family: 'Source Serif 4', serif; font-size: 0.93rem; text-align: left; transition: all 0.15s; color: var(--ink); }
+  .quiz-option:hover { border-color: var(--green); background: #eaf5ec; }
+  .quiz-option.correct { border-color: var(--green); background: #e0f2e4; color: var(--green); }
+  .quiz-option.wrong { border-color: var(--rust); background: #faecea; color: var(--rust); }
+  .quiz-feedback { display: none; padding: 0.8rem 1rem; border-radius: 6px; font-size: 0.9rem; margin-top: 0.5rem; }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct { background: #e0f2e4; color: var(--green); border-left: 3px solid var(--green); }
+  .quiz-feedback.wrong { background: #faecea; color: var(--rust); border-left: 3px solid var(--rust); }
+  .cheatsheet { background: var(--ink); color: var(--paper); border-radius: 12px; padding: 2rem; margin: 2rem 0; }
+  .cheatsheet h3 { color: #80c890; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase; margin: 0 0 1.2rem; }
+  .cs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media(max-width:600px){.cs-grid{grid-template-columns:1fr;}}
+  .cs-item { background: rgba(255,255,255,0.05); border-radius: 6px; padding: 1rem; }
+  .cs-item .cs-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: #80c890; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .cs-item .cs-body { color: #90b898; font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; line-height: 1.6; }
+  ul { padding-left: 1.5rem; margin-bottom: 1rem; }
+  li { margin-bottom: 0.3rem; }
+  hr.divider { border:none; border-top: 2px solid var(--border); margin: 2.5rem 0; }
 
+  /* Theorem number badges */
+  .thm-num { display: inline-block; background: var(--green); color: white; font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 3px; margin-right: 0.5rem; letter-spacing: 0.05em; vertical-align: middle; }
+
+  /* Diamond diagram */
+  .diamond { text-align: center; margin: 1.5rem 0; padding: 1.5rem; background: var(--ink); border-radius: 12px; }
+  .diamond svg { max-width: 320px; width: 100%; }
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+<header>
+  <a href="../index.html" class="back-link">← Back to Notes</a>
+  <div class="subtitle">Abstract Algebra · Group Theory</div>
+  <h1>The <em>Isomorphism</em> Theorems</h1>
+  <p class="tagline">Three theorems that govern how groups relate to their quotients</p>
+</header>
+<nav>
+  <a href="#overview">Overview</a>
+  <a href="#first">First Theorem</a>
+  <a href="#second">Second Theorem</a>
+  <a href="#third">Third Theorem</a>
+  <a href="#correspondence">Correspondence</a>
+  <a href="#applications">Applications</a>
+  <a href="#quiz">Quiz</a>
+</nav>
+
+<div class="container">
+
+  <section id="overview">
+    <div class="section-label">§ 1</div>
+    <h2>Overview</h2>
+    <p>The isomorphism theorems are the backbone of group theory. They describe, precisely and completely, how homomorphisms, subgroups, normal subgroups, and quotient groups interact. Once understood, they become automatic tools: whenever you see a homomorphism or a quotient, these theorems tell you exactly what structure to expect.</p>
+    <p>There are three main theorems (sometimes a fourth "correspondence theorem" is listed). They all flow from one central idea: <em>a homomorphism from G decomposes G into cosets of its kernel, and those cosets form the quotient group.</em></p>
+    <div class="note-box">
+      <strong>Historical note:</strong> These theorems are due to Emmy Noether (1882–1935), who reformulated and vastly generalised earlier work of Jordan and Hölder. The theorems hold not just for groups but for rings, modules, and many other algebraic structures.
+    </div>
+  </section>
+
+  <section id="first">
+    <div class="section-label">§ 2</div>
+    <h2><span class="thm-num">1st</span> First Isomorphism Theorem</h2>
+
+    <div class="thm-box">
+      <div class="thm-label">First Isomorphism Theorem</div>
+      <p>Let φ : G → H be a group homomorphism. Then:</p>
+      <ol style="padding-left:1.5rem; margin:0.7rem 0;">
+        <li>ker(φ) ◁ G</li>
+        <li>Im(φ) ≤ H</li>
+        <li>G/ker(φ) ≅ Im(φ)</li>
+      </ol>
+      <p style="margin-top:0.5rem; margin-bottom:0">The isomorphism is given by the map <span class="math">ψ : g·ker(φ) ↦ φ(g)</span>.</p>
+    </div>
+
+    <div class="math-block">
+  G ──π──→ G/ker(φ)
+  │               ↓ ψ ≅
+  └──φ────→ Im(φ) ≤ H
+
+  φ = ψ ∘ π   (factorisation through the quotient)
+    </div>
+
+    <p>Every homomorphism <strong>factors</strong> as: a surjection onto a quotient, followed by an isomorphism, followed by an inclusion. This is the canonical factorisation of any group map.</p>
+
+    <button class="proof-toggle" onclick="toggleProof('pf-first')"><span class="arrow">▶</span> Full Proof</button>
+    <div class="proof-body" id="pf-first">
+      Let K = ker(φ). We already know K ◁ G (proved in the homomorphisms note).<br><br>
+      <strong>Define ψ : G/K → Im(φ) by ψ(gK) = φ(g).</strong><br><br>
+      <strong>Well-defined:</strong> If gK = g'K, then g'⁻¹g ∈ K = ker(φ), so φ(g'⁻¹g) = e, giving φ(g) = φ(g'). ✓<br><br>
+      <strong>Homomorphism:</strong> ψ((aK)(bK)) = ψ(abK) = φ(ab) = φ(a)φ(b) = ψ(aK)ψ(bK). ✓<br><br>
+      <strong>Injective:</strong> If ψ(gK) = e_H, then φ(g) = e_H, so g ∈ K, meaning gK = K (the identity of G/K). Thus ker(ψ) = {K}, so ψ is injective. ✓<br><br>
+      <strong>Surjective onto Im(φ):</strong> For any φ(g) ∈ Im(φ), ψ(gK) = φ(g). ✓<br><br>
+      Therefore ψ is an isomorphism G/K → Im(φ). ∎
+    </div>
+
+    <h3>How to Use It</h3>
+    <p>The standard application: to identify a quotient group G/N, find a surjective homomorphism φ : G → H with kernel exactly N. Then G/N ≅ H.</p>
+
+    <div class="eg-box">
+      <div class="eg-label">Example 1 — ℤ/nℤ ≅ ℤₙ</div>
+      <p>φ : ℤ → ℤₙ, φ(k) = k mod n. This is surjective, and ker(φ) = nℤ. By the First Isomorphism Theorem: ℤ/nℤ ≅ ℤₙ.</p>
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Example 2 — GL(n)/SL(n) ≅ ℝ*</div>
+      <p>det : GL(n,ℝ) → ℝ* is surjective with kernel SL(n,ℝ). So GL(n,ℝ)/SL(n,ℝ) ≅ ℝ*.</p>
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Example 3 — ℝ/ℤ ≅ S¹</div>
+      <p>φ : ℝ → S¹, φ(x) = e^{2πix} is surjective with kernel ℤ. So ℝ/ℤ ≅ S¹.</p>
+    </div>
+  </section>
+
+  <section id="second">
+    <div class="section-label">§ 3</div>
+    <h2><span class="thm-num">2nd</span> Second Isomorphism Theorem</h2>
+    <p>Also known as the <strong>Diamond Theorem</strong> or <strong>Modular Law</strong>, due to the shape of the subgroup lattice it describes.</p>
+
+    <div class="thm-box">
+      <div class="thm-label">Second Isomorphism Theorem</div>
+      <p>Let H ≤ G and N ◁ G. Then:</p>
+      <ol style="padding-left:1.5rem; margin:0.7rem 0;">
+        <li>HN = {hn : h ∈ H, n ∈ N} is a subgroup of G</li>
+        <li>H ∩ N ◁ H</li>
+        <li>H / (H ∩ N)  ≅  HN / N</li>
+      </ol>
+    </div>
+
+    <div class="diamond">
+      <svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg">
+        <line x1="140" y1="20" x2="60" y2="90" stroke="#4a8a5a" stroke-width="1.5"/>
+        <line x1="140" y1="20" x2="220" y2="90" stroke="#4a8a5a" stroke-width="1.5"/>
+        <line x1="60" y1="90" x2="140" y2="165" stroke="#4a8a5a" stroke-width="1.5"/>
+        <line x1="220" y1="90" x2="140" y2="165" stroke="#4a8a5a" stroke-width="1.5"/>
+        <text x="140" y="15" text-anchor="middle" fill="#80c890" font-size="13" font-family="IBM Plex Mono">HN</text>
+        <text x="40" y="95" text-anchor="middle" fill="#a0c8e0" font-size="13" font-family="IBM Plex Mono">H</text>
+        <text x="235" y="95" text-anchor="middle" fill="#a0c8e0" font-size="13" font-family="IBM Plex Mono">N</text>
+        <text x="140" y="183" text-anchor="middle" fill="#80c890" font-size="13" font-family="IBM Plex Mono">H∩N</text>
+        <text x="82" y="52" text-anchor="middle" fill="#606060" font-size="10" font-family="IBM Plex Mono" font-style="italic">≅</text>
+        <text x="193" y="52" text-anchor="middle" fill="#606060" font-size="10" font-family="IBM Plex Mono" font-style="italic">N ◁ HN</text>
+        <text x="76" y="138" text-anchor="middle" fill="#606060" font-size="10" font-family="IBM Plex Mono" font-style="italic">◁</text>
+      </svg>
+    </div>
+
+    <button class="proof-toggle" onclick="toggleProof('pf-second')"><span class="arrow">▶</span> Proof</button>
+    <div class="proof-body" id="pf-second">
+      <strong>Step 1 — HN ≤ G:</strong> Since N ◁ G, for any h ∈ H we have hNh⁻¹ = N, so HN = NH. Now: (h₁n₁)(h₂n₂) = h₁h₂(h₂⁻¹n₁h₂)n₂ ∈ HN (since h₂⁻¹n₁h₂ ∈ N). Also (hn)⁻¹ = n⁻¹h⁻¹ = h⁻¹(hn⁻¹h⁻¹) ∈ HN. ✓<br><br>
+      <strong>Step 2 — H ∩ N ◁ H:</strong> For h ∈ H, x ∈ H ∩ N: hxh⁻¹ ∈ H (since H is a group) and hxh⁻¹ ∈ N (since N ◁ G). So hxh⁻¹ ∈ H ∩ N. ✓<br><br>
+      <strong>Step 3 — Isomorphism:</strong> Define φ : H → HN/N by φ(h) = hN. This is a well-defined homomorphism and is surjective (every coset hnN = hN for h ∈ H). Its kernel is {h ∈ H : hN = N} = {h ∈ H : h ∈ N} = H ∩ N. By the First Isomorphism Theorem: H/(H ∩ N) ≅ HN/N. ∎
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Example — In ℤ, H = 3ℤ, N = 5ℤ</div>
+      <p>HN = 3ℤ + 5ℤ = ℤ (since gcd(3,5) = 1). H ∩ N = 15ℤ. The theorem gives: 3ℤ/15ℤ ≅ ℤ/5ℤ = ℤ₅. Check: 3ℤ/15ℤ has order 5. ✓</p>
+    </div>
+  </section>
+
+  <section id="third">
+    <div class="section-label">§ 4</div>
+    <h2><span class="thm-num">3rd</span> Third Isomorphism Theorem</h2>
+    <p>The Third Isomorphism Theorem is the group-theoretic analogue of cancelling fractions: <em>(G/N)/(K/N) ≅ G/K</em>.</p>
+
+    <div class="thm-box">
+      <div class="thm-label">Third Isomorphism Theorem</div>
+      <p>Let N ◁ G and K ◁ G with N ≤ K ≤ G. Then:</p>
+      <ol style="padding-left:1.5rem; margin:0.7rem 0;">
+        <li>K/N ◁ G/N</li>
+        <li>(G/N) / (K/N)  ≅  G/K</li>
+      </ol>
+    </div>
+
+    <div class="math-block">
+  Analogy with fractions:  (G/N)/(K/N)  "="  G·N⁻¹ · (K·N⁻¹)⁻¹  =  G·K⁻¹  =  G/K
+
+  The isomorphism sends:  (gN)·(K/N)  ↦  gK
+    </div>
+
+    <button class="proof-toggle" onclick="toggleProof('pf-third')"><span class="arrow">▶</span> Proof</button>
+    <div class="proof-body" id="pf-third">
+      Define φ : G/N → G/K by φ(gN) = gK.<br><br>
+      <strong>Well-defined:</strong> If gN = g'N then g'⁻¹g ∈ N ≤ K, so gK = g'K. ✓<br><br>
+      <strong>Homomorphism:</strong> φ(gN · g'N) = φ(gg'N) = gg'K = gK · g'K = φ(gN)φ(g'N). ✓<br><br>
+      <strong>Surjective:</strong> For any gK ∈ G/K, φ(gN) = gK. ✓<br><br>
+      <strong>Kernel:</strong> ker(φ) = {gN : gK = K} = {gN : g ∈ K} = K/N. ✓<br><br>
+      By the First Isomorphism Theorem: (G/N)/ker(φ) ≅ Im(φ), i.e. (G/N)/(K/N) ≅ G/K. ∎
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Example — Quotients of ℤ</div>
+      <p>N = 12ℤ ≤ K = 4ℤ ≤ G = ℤ. Then (ℤ/12ℤ)/(4ℤ/12ℤ) ≅ ℤ/4ℤ. Here 4ℤ/12ℤ is the subgroup {0, 4, 8} of ℤ₁₂, i.e. the subgroup of order 3 inside ℤ₁₂. And ℤ₁₂ / ℤ₃ ≅ ℤ₄. ✓</p>
+    </div>
+  </section>
+
+  <section id="correspondence">
+    <div class="section-label">§ 5</div>
+    <h2>The Correspondence Theorem</h2>
+    <p>Sometimes listed as the Fourth Isomorphism Theorem, this theorem describes the complete subgroup structure of a quotient group.</p>
+
+    <div class="thm-box">
+      <div class="thm-label">Correspondence (Lattice) Theorem</div>
+      <p>Let N ◁ G and π : G → G/N be the canonical projection. There is an order-preserving bijection between:</p>
+      <ul style="margin:0.5rem 0 0 1.5rem;">
+        <li>The set of subgroups of G containing N, and</li>
+        <li>The set of subgroups of G/N</li>
+      </ul>
+      <p style="margin-top:0.5rem">given by H ↦ H/N = π(H) and its inverse L ↦ π⁻¹(L).</p>
+      <p style="margin-top:0.5rem; margin-bottom:0">Moreover: H ◁ G iff H/N ◁ G/N, and [G:H] = [G/N : H/N].</p>
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Example — Subgroup Lattice of ℤ/12ℤ</div>
+      <p>Subgroups of ℤ containing 12ℤ: 12ℤ, 6ℤ, 4ℤ, 3ℤ, 2ℤ, ℤ (those nℤ with n | 12). These correspond to subgroups of ℤ₁₂ of orders 1, 2, 3, 4, 6, 12 respectively.</p>
+    </div>
+  </section>
+
+  <section id="applications">
+    <div class="section-label">§ 6</div>
+    <h2>Applications and Strategy</h2>
+
+    <h3>The Standard Template</h3>
+    <p>To prove G/N ≅ H using the First Isomorphism Theorem:</p>
+    <ol style="padding-left:1.5rem; margin-bottom:1rem;">
+      <li>Construct a homomorphism φ : G → H</li>
+      <li>Prove φ is surjective</li>
+      <li>Compute ker(φ) and show ker(φ) = N</li>
+      <li>Conclude G/N ≅ H by the First Isomorphism Theorem</li>
+    </ol>
+
+    <div class="eg-box">
+      <div class="eg-label">Application — ℝ*/ℝ₊* ≅ ℤ₂</div>
+      <p>φ : ℝ* → {±1} = ℤ₂, φ(x) = x/|x| (the sign function). Surjective, ker = ℝ₊*. So ℝ*/ℝ₊* ≅ ℤ₂.</p>
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Application — Cyclic Groups</div>
+      <p>Every cyclic group of order n is isomorphic to ℤₙ. Proof: let G = ⟨g⟩. Define φ : ℤ → G by φ(k) = gᵏ. This is a surjective homomorphism with kernel nℤ (since gⁿ = e and no smaller power works). By the First Isomorphism Theorem: G ≅ ℤ/nℤ = ℤₙ.</p>
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Application — Product Groups</div>
+      <p>Consider G = ℤ₁₂ and N = ⟨4⟩ = {0,4,8} ≅ ℤ₃. Then G/N ≅ ℤ₄. Now take K = ⟨6⟩ = {0,6} ≅ ℤ₂. Then G/K ≅ ℤ₆. The Third Isomorphism Theorem: if we take N ≤ K, it tells us the relationship between these quotients.</p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="quiz">
+    <div class="section-label">§ 7</div>
+    <h2>Check Your Understanding</h2>
+
+    <div class="quiz">
+      <h3>Question 1</h3>
+      <p class="quiz-q">φ : ℤ₁₂ → ℤ₄ is a surjective homomorphism. What is |ker(φ)|?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this,false,'q1','By the First Isomorphism Theorem, |ker(φ)| = |ℤ₁₂|/|Im(φ)| = 12/4 = 3.')">2</button>
+        <button class="quiz-option" onclick="answer(this,true,'q1','Correct! |ker(φ)| = |ℤ₁₂|/|ℤ₄| = 12/4 = 3. The kernel has 3 elements.')">3</button>
+        <button class="quiz-option" onclick="answer(this,false,'q1','That would make |ker| = 2, giving |Im| = 6, but Im ≅ ℤ₄ has order 4.')">6</button>
+        <button class="quiz-option" onclick="answer(this,false,'q1','That would give |Im| = 1 — trivial, not ℤ₄.')">12</button>
+      </div>
+      <div class="quiz-feedback" id="q1-feedback"></div>
+    </div>
+
+    <div class="quiz">
+      <h3>Question 2</h3>
+      <p class="quiz-q">The Second Isomorphism Theorem says H/(H ∩ N) ≅ HN/N. What is the key hypothesis?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this,false,'q2','H need not be normal — it just needs to be a subgroup.')">H ◁ G</button>
+        <button class="quiz-option" onclick="answer(this,true,'q2','Correct! N must be normal in G. H just needs to be any subgroup.')">N ◁ G</button>
+        <button class="quiz-option" onclick="answer(this,false,'q2','H ∩ N is automatically normal in H — that is a conclusion, not a hypothesis.')">H ∩ N ◁ G</button>
+        <button class="quiz-option" onclick="answer(this,false,'q2','H ≤ N is too strong — we only need H ≤ G and N ◁ G.')">H ≤ N</button>
+      </div>
+      <div class="quiz-feedback" id="q2-feedback"></div>
+    </div>
+
+    <div class="quiz">
+      <h3>Question 3</h3>
+      <p class="quiz-q">Using the Third Isomorphism Theorem: what is (ℤ/6ℤ) / (2ℤ/6ℤ) isomorphic to?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this,false,'q3','ℤ₆ is the original group, not the result of the theorem.')">ℤ₆</button>
+        <button class="quiz-option" onclick="answer(this,true,'q3','Correct! The Third Isomorphism Theorem gives (ℤ/6ℤ)/(2ℤ/6ℤ) ≅ ℤ/2ℤ = ℤ₂.')">ℤ₂</button>
+        <button class="quiz-option" onclick="answer(this,false,'q3','ℤ₃ would come from ℤ/3ℤ, but here N = 6ℤ ≤ K = 2ℤ and G/K = ℤ/2ℤ.')">ℤ₃</button>
+        <button class="quiz-option" onclick="answer(this,false,'q4','2ℤ/6ℤ has order 3 inside ℤ₆, so the quotient has order 6/3 = 2.')">ℤ₄</button>
+      </div>
+      <div class="quiz-feedback" id="q3-feedback"></div>
+    </div>
+  </section>
+
+  <div class="cheatsheet">
+    <h3>Isomorphism Theorems — Quick Reference</h3>
+    <div class="cs-grid">
+      <div class="cs-item"><div class="cs-title">First Theorem</div><div class="cs-body">φ : G→H ⟹ G/ker(φ) ≅ Im(φ)</div></div>
+      <div class="cs-item"><div class="cs-title">How to Use 1st</div><div class="cs-body">Find surjective φ with ker = N to show G/N ≅ H</div></div>
+      <div class="cs-item"><div class="cs-title">Second Theorem</div><div class="cs-body">H ≤ G, N ◁ G ⟹ H/(H∩N) ≅ HN/N</div></div>
+      <div class="cs-item"><div class="cs-title">Third Theorem</div><div class="cs-body">N ≤ K, both ◁ G ⟹ (G/N)/(K/N) ≅ G/K</div></div>
+      <div class="cs-item"><div class="cs-title">Correspondence</div><div class="cs-body">Subgroups of G/N ↔ subgroups of G containing N</div></div>
+      <div class="cs-item"><div class="cs-title">Order Formula</div><div class="cs-body">|G/N| = |G|/|N|; |Im(φ)| = |G|/|ker(φ)|</div></div>
+      <div class="cs-item"><div class="cs-title">Analogy (3rd)</div><div class="cs-body">(G/N)/(K/N) ≅ G/K  "like (a/b)/(c/b) = a/c"</div></div>
+      <div class="cs-item"><div class="cs-title">Diamond (2nd)</div><div class="cs-body">Index [H : H∩N] = [HN : N]</div></div>
+    </div>
+  </div>
+
+</div>
+<script>
+window.addEventListener('scroll', () => {
+  const s = document.body.scrollTop || document.documentElement.scrollTop;
+  const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  document.getElementById('progressBar').style.width = (s/h*100) + '%';
+});
+const obs = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('visible'); }), {threshold:0.08});
+document.querySelectorAll('section').forEach(s => obs.observe(s));
+function toggleProof(id) {
+  const b = document.getElementById(id); const btn = b.previousElementSibling;
+  b.classList.toggle('open'); btn.classList.toggle('open');
+}
+function answer(btn, correct, qid, msg) {
+  document.getElementById(qid).querySelectorAll('.quiz-option').forEach(b => b.disabled = true);
+  btn.classList.add(correct ? 'correct' : 'wrong');
+  const fb = document.getElementById(qid+'-feedback');
+  fb.textContent = (correct?'✓ ':'✗ ')+msg;
+  fb.className = 'quiz-feedback show '+(correct?'correct':'wrong');
+}
+</script>
+</body>
+</html>
