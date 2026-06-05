@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Normal Subgroups — Abstract Algebra</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1410;
+    --paper: #f7f3ec;
+    --cream: #ede8df;
+    --gold: #b5860d;
+    --rust: #9b3a1a;
+    --sage: #3d5a47;
+    --slate: #3a4a5c;
+    --light-gold: #f0d98a;
+    --muted: #7a6f63;
+    --border: #c8bfb0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.75;
+    font-size: 17px;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 40px,
+      rgba(181,134,13,0.06) 40px,
+      rgba(181,134,13,0.06) 41px
+    );
+  }
+  header .subtitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.8rem;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 6vw, 3.8rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    position: relative;
+  }
+  header h1 em {
+    color: var(--light-gold);
+    font-style: italic;
+  }
+  header .tagline {
+    margin-top: 1rem;
+    color: #b0a898;
+    font-size: 1rem;
+    font-style: italic;
+    position: relative;
+  }
+
+  /* NAV */
+  nav {
+    background: var(--cream);
+    border-bottom: 2px solid var(--border);
+    padding: 0 1rem;
+    display: flex;
+    overflow-x: auto;
+    gap: 0;
+  }
+  nav a {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.9rem 1.2rem;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  nav a:hover { color: var(--rust); border-bottom-color: var(--rust); }
+
+  /* LAYOUT */
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+  }
+
+  /* SECTIONS */
+  section {
+    margin-bottom: 4rem;
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  section.visible { opacity: 1; transform: translateY(0); }
+
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--ink);
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+  }
+
+  h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    color: var(--slate);
+    margin: 1.8rem 0 0.7rem;
+  }
+
+  p { margin-bottom: 1rem; }
+
+  /* DEFINITION BOX */
+  .def-box {
+    border-left: 4px solid var(--gold);
+    background: linear-gradient(135deg, #fdf9f0, #faf5e8);
+    padding: 1.4rem 1.6rem;
+    margin: 1.5rem 0;
+    border-radius: 0 8px 8px 0;
+    box-shadow: 2px 2px 12px rgba(0,0,0,0.06);
+  }
+  .def-box .def-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+  .def-box p { margin: 0; }
+
+  /* THEOREM BOX */
+  .thm-box {
+    border: 2px solid var(--slate);
+    background: #f2f5f8;
+    padding: 1.4rem 1.6rem;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+  }
+  .thm-box .thm-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 0.5rem;
+  }
+
+  /* EXAMPLE BOX */
+  .eg-box {
+    border-left: 4px solid var(--sage);
+    background: #f0f5f1;
+    padding: 1.4rem 1.6rem;
+    margin: 1.5rem 0;
+    border-radius: 0 8px 8px 0;
+  }
+  .eg-box .eg-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 0.5rem;
+  }
+
+  /* WARNING / NOTE BOX */
+  .note-box {
+    border-left: 4px solid var(--rust);
+    background: #fbf0ec;
+    padding: 1.2rem 1.4rem;
+    margin: 1.5rem 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.93rem;
+  }
+
+  /* MATH */
+  .math {
+    font-family: 'IBM Plex Mono', monospace;
+    background: rgba(0,0,0,0.05);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+    font-size: 0.92em;
+  }
+  .math-block {
+    font-family: 'IBM Plex Mono', monospace;
+    background: var(--ink);
+    color: var(--light-gold);
+    padding: 1.2rem 1.6rem;
+    border-radius: 8px;
+    margin: 1.2rem 0;
+    font-size: 0.9rem;
+    line-height: 1.9;
+    overflow-x: auto;
+  }
+
+  /* STEP LIST */
+  .steps {
+    counter-reset: step;
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+  }
+  .steps li {
+    counter-increment: step;
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: flex-start;
+  }
+  .steps li::before {
+    content: counter(step);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--paper);
+    background: var(--gold);
+    min-width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-top: 0.1rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* EQUIVALENCE TABLE */
+  .equiv-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+    font-size: 0.92rem;
+  }
+  .equiv-grid .row {
+    display: contents;
+  }
+  .equiv-grid .row > div {
+    padding: 0.85rem 1.2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .equiv-grid .row:last-child > div { border-bottom: none; }
+  .equiv-grid .row:nth-child(even) > div { background: var(--cream); }
+  .equiv-grid .cond {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.82rem;
+    background: var(--ink) !important;
+    color: var(--light-gold);
+    white-space: nowrap;
+  }
+
+  /* INTERACTIVE QUIZ */
+  .quiz {
+    background: var(--cream);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+  .quiz h3 {
+    margin-top: 0;
+    color: var(--ink);
+    font-size: 1.1rem;
+  }
+  .quiz-q { margin-bottom: 1rem; font-weight: 400; }
+  .quiz-options { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+  .quiz-option {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.93rem;
+    text-align: left;
+    transition: all 0.15s;
+    color: var(--ink);
+  }
+  .quiz-option:hover { border-color: var(--gold); background: #fffbf2; }
+  .quiz-option.correct { border-color: var(--sage); background: #e8f5eb; color: var(--sage); }
+  .quiz-option.wrong { border-color: var(--rust); background: #fdecea; color: var(--rust); }
+  .quiz-feedback {
+    display: none;
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct { background: #e8f5eb; color: var(--sage); border-left: 3px solid var(--sage); }
+  .quiz-feedback.wrong { background: #fdecea; color: var(--rust); border-left: 3px solid var(--rust); }
+
+  /* COSET VISUALIZER */
+  .visualizer {
+    background: var(--ink);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    color: var(--paper);
+  }
+  .visualizer h4 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+  .vis-controls {
+    display: flex; gap: 0.7rem; flex-wrap: wrap; margin-bottom: 1.2rem;
+  }
+  .vis-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    padding: 0.45rem 0.9rem;
+    border: 1.5px solid #444;
+    background: transparent;
+    color: var(--paper);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .vis-btn:hover, .vis-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(181,134,13,0.1); }
+  .coset-display {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+  }
+  .coset-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    min-width: 130px;
+    transition: all 0.3s;
+  }
+  .coset-card .coset-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--light-gold);
+    margin-bottom: 0.5rem;
+  }
+  .coset-card .coset-els {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+    color: #ccc;
+  }
+  .coset-card.left { border-color: rgba(61,90,71,0.6); }
+  .coset-card.right { border-color: rgba(155,58,26,0.6); }
+  .coset-card.match { border-color: var(--gold); background: rgba(181,134,13,0.1); }
+  .vis-result {
+    margin-top: 1rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.82rem;
+    color: #aaa;
+    min-height: 1.4rem;
+  }
+  .vis-result.normal { color: #7ecb8f; }
+  .vis-result.notnormal { color: #e08070; }
+
+  /* COLLAPSIBLE PROOF */
+  .proof-toggle {
+    background: none;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 0.6rem 1.1rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: var(--muted);
+    margin: 0.5rem 0 1rem;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .proof-toggle:hover { color: var(--slate); border-color: var(--slate); }
+  .proof-toggle .arrow { transition: transform 0.2s; display: inline-block; }
+  .proof-toggle.open .arrow { transform: rotate(90deg); }
+  .proof-body {
+    display: none;
+    background: #f9f7f4;
+    border-left: 3px solid var(--border);
+    padding: 1.2rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 1.5rem;
+    font-size: 0.93rem;
+  }
+  .proof-body.open { display: block; }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--rust));
+    width: 0%;
+    transition: width 0.1s;
+    z-index: 1000;
+  }
+
+  /* CHEAT SHEET */
+  .cheatsheet {
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+  .cheatsheet h3 {
+    color: var(--light-gold);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin: 0 0 1.2rem;
+  }
+  .cs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 600px) { .cs-grid { grid-template-columns: 1fr; } }
+  .cs-item {
+    background: rgba(255,255,255,0.05);
+    border-radius: 6px;
+    padding: 1rem;
+    font-size: 0.88rem;
+  }
+  .cs-item .cs-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .cs-item .cs-body { color: #ccc; font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; line-height: 1.6; }
+
+  ul { padding-left: 1.5rem; margin-bottom: 1rem; }
+  li { margin-bottom: 0.3rem; }
+
+  .divider {
+    border: none;
+    border-top: 2px solid var(--border);
+    margin: 2.5rem 0;
+  }
+  a { color: var(--rust); }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<header>
+  <div class="subtitle">Abstract Algebra · Group Theory</div>
+  <h1><em>Normal</em> Subgroups</h1>
+  <p class="tagline">A complete guided tour — from definition to quotient groups</p>
+</header>
+
+<nav>
+  <a href="#motivation">Motivation</a>
+  <a href="#definition">Definition</a>
+  <a href="#equiv">Equivalences</a>
+  <a href="#examples">Examples</a>
+  <a href="#properties">Properties</a>
+  <a href="#quotient">Quotient Groups</a>
+  <a href="#theorems">Theorems</a>
+  <a href="#quiz">Quiz</a>
+</nav>
+
+<div class="container">
+
+  <!-- MOTIVATION -->
+  <section id="motivation">
+    <div class="section-label">§ 1</div>
+    <h2>Why Normal Subgroups?</h2>
+
+    <p>In group theory, we can always form <strong>cosets</strong> of any subgroup H in a group G. Given H ≤ G, for each g ∈ G we get a left coset <span class="math">gH = {gh : h ∈ H}</span> and a right coset <span class="math">Hg = {hg : h ∈ H}</span>.</p>
+
+    <p>A natural question arises: <em>can we make the set of all cosets into a group itself?</em> We want to define multiplication on cosets as:</p>
+
+    <div class="math-block">
+  (aH)(bH) = (ab)H
+    </div>
+
+    <p>But there's a problem. This operation must be <strong>well-defined</strong> — it cannot depend on which representatives a, b we pick for the cosets. If we pick a′ ∈ aH and b′ ∈ bH instead, we need (a′b′)H = (ab)H.</p>
+
+    <p>It turns out this works <em>precisely when</em> left and right cosets of H coincide — which is exactly the condition of being a <strong>normal subgroup</strong>. This is the deep reason why normal subgroups matter: they are exactly the subgroups that allow us to build quotient groups.</p>
+
+    <div class="note-box">
+      <strong>Intuition:</strong> A normal subgroup is one that "looks the same from both sides" — conjugating it by any group element gives back the same subgroup. It is a subgroup that the whole group "respects."
+    </div>
+  </section>
+
+  <!-- DEFINITION -->
+  <section id="definition">
+    <div class="section-label">§ 2</div>
+    <h2>The Definition</h2>
+
+    <div class="def-box">
+      <div class="def-label">Definition — Normal Subgroup</div>
+      <p>A subgroup N of a group G is called a <strong>normal subgroup</strong>, written <span class="math">N ◁ G</span>, if for every g ∈ G and every n ∈ N, the conjugate <span class="math">gng⁻¹</span> lies in N. That is:</p>
+    </div>
+
+    <div class="math-block">
+  N ◁ G  ⟺  gNg⁻¹ ⊆ N  for all g ∈ G
+
+  where  gNg⁻¹ = { gng⁻¹ : n ∈ N }
+    </div>
+
+    <p>Since we also have <span class="math">g⁻¹Ng ⊆ N</span> (apply the condition to g⁻¹), this actually gives equality:</p>
+
+    <div class="math-block">
+  N ◁ G  ⟺  gNg⁻¹ = N  for all g ∈ G
+    </div>
+
+    <h3>Notation</h3>
+    <ul>
+      <li><span class="math">N ◁ G</span> — N is a normal subgroup of G</li>
+      <li><span class="math">N ◁◁ G</span> — N is a <em>proper</em> normal subgroup (N ≠ G)</li>
+      <li>The map <span class="math">φ_g : n ↦ gng⁻¹</span> is called <strong>conjugation by g</strong></li>
+    </ul>
+  </section>
+
+  <!-- EQUIVALENCES -->
+  <section id="equiv">
+    <div class="section-label">§ 3</div>
+    <h2>Equivalent Conditions</h2>
+
+    <p>There are several equivalent ways to state normality, each giving a different perspective. Let N ≤ G. The following are all equivalent:</p>
+
+    <div class="equiv-grid">
+      <div class="row"><div class="cond">(i)</div><div>gNg⁻¹ = N for all g ∈ G &nbsp;(conjugation invariance)</div></div>
+      <div class="row"><div class="cond">(ii)</div><div>gN = Ng for all g ∈ G &nbsp;(left cosets = right cosets)</div></div>
+      <div class="row"><div class="cond">(iii)</div><div>Every left coset of N in G is also a right coset</div></div>
+      <div class="row"><div class="cond">(iv)</div><div>The coset multiplication (aN)(bN) = (ab)N is well-defined</div></div>
+      <div class="row"><div class="cond">(v)</div><div>N is the kernel of some group homomorphism φ : G → H</div></div>
+      <div class="row"><div class="cond">(vi)</div><div>N is a union of conjugacy classes of G</div></div>
+    </div>
+
+    <button class="proof-toggle" onclick="toggleProof('proof-equiv')">
+      <span class="arrow">▶</span> Show: (i) ⟺ (ii)
+    </button>
+    <div class="proof-body" id="proof-equiv">
+      <strong>Proof that (i) ⟺ (ii):</strong><br><br>
+      <strong>(i) ⟹ (ii):</strong> Suppose gNg⁻¹ = N for all g ∈ G. We want to show gN = Ng.<br>
+      Take any x ∈ gN, so x = gn for some n ∈ N. Then:<br>
+      <span style="font-family:monospace">x = gn = g·n·g⁻¹·g = (gng⁻¹)·g ∈ Ng</span> (since gng⁻¹ ∈ N by hypothesis).<br>
+      So gN ⊆ Ng. Applying the same to g⁻¹ gives g⁻¹N ⊆ Ng⁻¹, i.e. Ng ⊆ gN. Hence gN = Ng.<br><br>
+      <strong>(ii) ⟹ (i):</strong> Suppose gN = Ng for all g ∈ G. Then gNg⁻¹ = (gN)g⁻¹ = (Ng)g⁻¹ = N(gg⁻¹) = N. ∎
+    </div>
+
+    <h3>Condition (vi): Union of Conjugacy Classes</h3>
+    <p>The <strong>conjugacy class</strong> of x in G is <span class="math">Cl(x) = {gxg⁻¹ : g ∈ G}</span>. The condition gNg⁻¹ = N for all g means N is closed under all conjugations — so if it contains one element of a conjugacy class, it contains all of them. This gives the elegant reformulation: <em>N ◁ G if and only if N is a union of conjugacy classes of G.</em></p>
+  </section>
+
+  <!-- EXAMPLES -->
+  <section id="examples">
+    <div class="section-label">§ 4</div>
+    <h2>Examples and Non-Examples</h2>
+
+    <h3>Always-Normal Subgroups</h3>
+
+    <div class="eg-box">
+      <div class="eg-label">Example 1 — Trivial Cases</div>
+      <p>For any group G, both <span class="math">{e} ◁ G</span> and <span class="math">G ◁ G</span>. These are called the <strong>trivial normal subgroups</strong>. Verify: g·e·g⁻¹ = e ∈ {e}, and gGg⁻¹ = G.</p>
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Example 2 — Abelian Groups</div>
+      <p>In an abelian group G, <em>every</em> subgroup is normal. Proof: gng⁻¹ = gg⁻¹n = n ∈ N for all g, n. So in ℤ, (ℚ, +), any cyclic group — all subgroups are normal.</p>
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Example 3 — The Alternating Group Aₙ in Sₙ</div>
+      <p>The alternating group Aₙ (even permutations) is a normal subgroup of Sₙ (all permutations) for all n ≥ 1. It has index 2, and <strong>any subgroup of index 2 is automatically normal</strong>. Proof: if [G:H] = 2, then G has only two left cosets {H, gH} and two right cosets {H, Hg}, so gH = Hg for all g.</p>
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Example 4 — The Center Z(G)</div>
+      <p>The center <span class="math">Z(G) = {g ∈ G : gx = xg for all x ∈ G}</span> is always normal in G. Indeed, if z ∈ Z(G), then gzg⁻¹ = gg⁻¹z = z ∈ Z(G).</p>
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Example 5 — SL(n,ℝ) in GL(n,ℝ)</div>
+      <p>The special linear group SL(n,ℝ) = {A : det(A) = 1} is normal in GL(n,ℝ) = {A : det(A) ≠ 0}. This is because SL(n,ℝ) = ker(det), the kernel of the determinant homomorphism det : GL(n,ℝ) → ℝ*.</p>
+    </div>
+
+    <h3>A Non-Example</h3>
+
+    <div class="note-box">
+      <strong>Non-Example — H = {e, (12)} in S₃:</strong><br>
+      Let G = S₃ and H = {e, (12)}. Is H ◁ S₃? Take g = (13) ∈ S₃.<br>
+      Then (13)(12)(13)⁻¹ = (13)(12)(13) = (23).<br>
+      Since (23) ∉ H, we have gHg⁻¹ ≠ H. So H is <strong>not</strong> normal in S₃.
+    </div>
+
+    <!-- INTERACTIVE VISUALIZER -->
+    <div class="visualizer">
+      <h4>Interactive Coset Visualizer — S₃</h4>
+      <p style="font-size:0.85rem; color:#aaa; margin-bottom:1rem;">S₃ = {e, (12), (13), (23), (123), (132)}. Select a subgroup to see its left and right cosets.</p>
+      <div class="vis-controls">
+        <button class="vis-btn active" onclick="showCosets('A3')" id="btn-A3">A₃ = {e,(123),(132)}</button>
+        <button class="vis-btn" onclick="showCosets('H12')" id="btn-H12">H = {e,(12)}</button>
+        <button class="vis-btn" onclick="showCosets('H13')" id="btn-H13">H = {e,(13)}</button>
+      </div>
+      <div class="coset-display" id="cosetDisplay"></div>
+      <div class="vis-result" id="visResult"></div>
+    </div>
+  </section>
+
+  <!-- PROPERTIES -->
+  <section id="properties">
+    <div class="section-label">§ 5</div>
+    <h2>Key Properties</h2>
+
+    <h3>Intersections and Products</h3>
+
+    <div class="thm-box">
+      <div class="thm-label">Theorem</div>
+      <p>If N ◁ G and M ◁ G, then:</p>
+      <ol style="padding-left:1.5rem; margin:0.5rem 0;">
+        <li><span class="math">N ∩ M ◁ G</span></li>
+        <li><span class="math">NM = {nm : n ∈ N, m ∈ M} ◁ G</span></li>
+      </ol>
+    </div>
+
+    <button class="proof-toggle" onclick="toggleProof('proof-inter')">
+      <span class="arrow">▶</span> Proof of (1)
+    </button>
+    <div class="proof-body" id="proof-inter">
+      Let x ∈ N ∩ M and g ∈ G. Then gxg⁻¹ ∈ N (since N ◁ G and x ∈ N) and gxg⁻¹ ∈ M (since M ◁ G and x ∈ M). Therefore gxg⁻¹ ∈ N ∩ M, so N ∩ M ◁ G. ∎
+    </div>
+
+    <h3>Normal Subgroups and Homomorphisms</h3>
+
+    <div class="thm-box">
+      <div class="thm-label">Theorem</div>
+      <p>If φ : G → H is a group homomorphism, then:</p>
+      <ul style="margin:0.5rem 0 0 1.5rem;">
+        <li><span class="math">ker(φ) ◁ G</span> — the kernel is always normal</li>
+        <li>If N ◁ G, then <span class="math">φ(N) ◁ φ(G)</span> (image of normal is normal in image)</li>
+        <li>If M ◁ H, then <span class="math">φ⁻¹(M) ◁ G</span> (preimage of normal is normal)</li>
+      </ul>
+    </div>
+
+    <button class="proof-toggle" onclick="toggleProof('proof-ker')">
+      <span class="arrow">▶</span> Proof: ker(φ) ◁ G
+    </button>
+    <div class="proof-body" id="proof-ker">
+      Let n ∈ ker(φ), so φ(n) = e_H. For any g ∈ G:<br><br>
+      φ(gng⁻¹) = φ(g)·φ(n)·φ(g⁻¹) = φ(g)·e_H·φ(g)⁻¹ = e_H.<br><br>
+      So gng⁻¹ ∈ ker(φ). Since g and n were arbitrary, ker(φ) ◁ G. ∎
+    </div>
+
+    <h3>Normal Is Not Transitive</h3>
+
+    <div class="note-box">
+      <strong>Caution:</strong> Normality is <em>not</em> transitive. If K ◁ H and H ◁ G, it does <strong>not</strong> follow that K ◁ G.<br><br>
+      <strong>Counterexample:</strong> In G = D₄ (dihedral group of order 8), let H = ⟨r²,s⟩ ≅ ℤ₂×ℤ₂ and K = ⟨s⟩. Then K ◁ H and H ◁ G, but K is not normal in G.
+    </div>
+
+    <h3>Index-2 Subgroups</h3>
+
+    <div class="thm-box">
+      <div class="thm-label">Theorem</div>
+      <p>Any subgroup of index 2 is normal.</p>
+    </div>
+
+    <p>This is one of the most useful normality criteria in practice. Proof: if [G:H] = 2, the only cosets of H are H itself and G\H. So the left coset gH equals H if g ∈ H, or G\H if g ∉ H — and the right coset Hg does the same. Hence gH = Hg for all g.</p>
+  </section>
+
+  <!-- QUOTIENT GROUPS -->
+  <section id="quotient">
+    <div class="section-label">§ 6</div>
+    <h2>Quotient Groups G/N</h2>
+
+    <p>Here is the central payoff. Given N ◁ G, we define the <strong>quotient group</strong> (or factor group) G/N.</p>
+
+    <div class="def-box">
+      <div class="def-label">Definition — Quotient Group</div>
+      <p>Let N ◁ G. The set of all left cosets of N in G, denoted <span class="math">G/N = {gN : g ∈ G}</span>, forms a group under the operation:</p>
+    </div>
+
+    <div class="math-block">
+  (aN)(bN) := (ab)N
+    </div>
+
+    <p>The identity element is N (= eN), and the inverse of gN is g⁻¹N.</p>
+
+    <h3>Well-Definedness</h3>
+
+    <p>The critical step is verifying the operation is well-defined. Suppose aN = a′N and bN = b′N (same cosets, different representatives). We need (ab)N = (a′b′)N.</p>
+
+    <div class="math-block">
+  Since a′ ∈ aN, write a′ = an₁ for some n₁ ∈ N
+  Since b′ ∈ bN, write b′ = bn₂ for some n₂ ∈ N
+
+  Then:  a′b′ = an₁·bn₂ = ab·(b⁻¹n₁b)·n₂
+
+  Since N ◁ G: b⁻¹n₁b ∈ N, so (b⁻¹n₁b)·n₂ ∈ N
+  Therefore a′b′ = ab·(something in N), so (a′b′)N = (ab)N  ✓
+    </div>
+
+    <h3>The Order of G/N</h3>
+
+    <div class="thm-box">
+      <div class="thm-label">Lagrange's Theorem — Corollary</div>
+      <p>If G is finite, then |G/N| = |G|/|N| = [G : N], the index of N in G.</p>
+    </div>
+
+    <h3>Examples of Quotient Groups</h3>
+
+    <div class="eg-box">
+      <div class="eg-label">Example — ℤ/nℤ</div>
+      <p>The integers ℤ with the subgroup nℤ = {…, −2n, −n, 0, n, 2n, …} (multiples of n). Since ℤ is abelian, nℤ ◁ ℤ. The quotient ℤ/nℤ has n cosets: 0+nℤ, 1+nℤ, …, (n−1)+nℤ — these are just the residue classes mod n! So ℤ/nℤ ≅ ℤₙ.</p>
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Example — ℝ/ℤ</div>
+      <p>The quotient ℝ/ℤ consists of all real numbers modulo integer equivalence. The coset x + ℤ is characterized by the fractional part of x. This group is isomorphic to the circle group S¹ = {e^{2πiθ} : θ ∈ ℝ} under complex multiplication.</p>
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Example — S₃/A₃</div>
+      <p>A₃ ◁ S₃ with index 2. The quotient S₃/A₃ has 2 elements: {A₃, (12)A₃}. Any group of order 2 is isomorphic to ℤ₂. So S₃/A₃ ≅ ℤ₂.</p>
+    </div>
+
+    <h3>The Canonical Projection</h3>
+
+    <p>There is always a natural surjective homomorphism called the <strong>canonical projection</strong> (or quotient map):</p>
+
+    <div class="math-block">
+  π : G → G/N,   defined by   π(g) = gN
+
+  It is surjective, and ker(π) = N.
+    </div>
+
+    <p>This gives a concrete realization of N as a kernel — confirming that N ◁ G if and only if N is the kernel of some homomorphism out of G.</p>
+  </section>
+
+  <!-- ISOMORPHISM THEOREMS -->
+  <section id="theorems">
+    <div class="section-label">§ 7</div>
+    <h2>The Isomorphism Theorems</h2>
+
+    <p>Normal subgroups are the key ingredient in the three fundamental isomorphism theorems, which are the workhorses of group theory.</p>
+
+    <div class="thm-box">
+      <div class="thm-label">First Isomorphism Theorem</div>
+      <p>If φ : G → H is a group homomorphism, then ker(φ) ◁ G and:</p>
+      <div class="math-block" style="margin:0.7rem 0 0;">G / ker(φ)  ≅  Im(φ)</div>
+      <p style="margin-top:0.7rem; margin-bottom:0;">The isomorphism is given by <span class="math">g·ker(φ) ↦ φ(g)</span>.</p>
+    </div>
+
+    <button class="proof-toggle" onclick="toggleProof('proof-1st')">
+      <span class="arrow">▶</span> Proof sketch
+    </button>
+    <div class="proof-body" id="proof-1st">
+      Define ψ : G/ker(φ) → Im(φ) by ψ(gK) = φ(g) where K = ker(φ).<br><br>
+      <strong>Well-defined:</strong> If gK = g′K, then g′⁻¹g ∈ K, so φ(g′⁻¹g) = e, giving φ(g) = φ(g′).<br>
+      <strong>Homomorphism:</strong> ψ((aK)(bK)) = ψ(abK) = φ(ab) = φ(a)φ(b) = ψ(aK)ψ(bK).<br>
+      <strong>Injective:</strong> If ψ(gK) = e, then φ(g) = e, so g ∈ K, meaning gK = K = identity coset.<br>
+      <strong>Surjective:</strong> For any φ(g) ∈ Im(φ), ψ(gK) = φ(g). ∎
+    </div>
+
+    <div class="thm-box">
+      <div class="thm-label">Second Isomorphism Theorem (Diamond Theorem)</div>
+      <p>Let H ≤ G and N ◁ G. Then:</p>
+      <ul style="margin:0.5rem 0 0 1.5rem;">
+        <li>HN = {hn : h ∈ H, n ∈ N} is a subgroup of G</li>
+        <li>H ∩ N ◁ H</li>
+        <li><span class="math">H/(H ∩ N) ≅ HN/N</span></li>
+      </ul>
+    </div>
+
+    <div class="thm-box">
+      <div class="thm-label">Third Isomorphism Theorem</div>
+      <p>Let N ◁ G and K ◁ G with N ≤ K ≤ G. Then K/N ◁ G/N and:</p>
+      <div class="math-block" style="margin:0.7rem 0 0;">(G/N) / (K/N)  ≅  G/K</div>
+      <p style="margin-top:0.7rem; margin-bottom:0;">Informally: "canceling N from top and bottom." This is the group-theory analogue of (a/b)/(c/b) = a/c.</p>
+    </div>
+
+    <h3>Simple Groups</h3>
+
+    <div class="def-box">
+      <div class="def-label">Definition — Simple Group</div>
+      <p>A group G is called <strong>simple</strong> if its only normal subgroups are {e} and G itself. Simple groups are the "atoms" of group theory — they cannot be further factored by quotients.</p>
+    </div>
+
+    <p>Examples of simple groups: ℤₚ for prime p, the alternating groups Aₙ for n ≥ 5. The classification of all finite simple groups is one of the greatest achievements of 20th-century mathematics, completed in 2004 across tens of thousands of pages.</p>
+
+    <h3>Composition Series & The Jordan–Hölder Theorem</h3>
+
+    <p>A <strong>composition series</strong> for G is a chain:</p>
+
+    <div class="math-block">
+  {e} = G₀ ◁ G₁ ◁ G₂ ◁ … ◁ Gₙ = G
+
+  where each Gᵢ ◁ Gᵢ₊₁ and each quotient Gᵢ₊₁/Gᵢ is simple.
+    </div>
+
+    <div class="thm-box">
+      <div class="thm-label">Jordan–Hölder Theorem</div>
+      <p>If a finite group G has a composition series, then any two composition series of G have the same length and the same multiset of composition factors (up to isomorphism and reordering).</p>
+    </div>
+
+    <p>This is the group-theoretic analogue of the <strong>Fundamental Theorem of Arithmetic</strong>: just as every integer factors uniquely into primes, every finite group has a unique factorization into simple groups.</p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- QUIZ -->
+  <section id="quiz">
+    <div class="section-label">§ 8</div>
+    <h2>Check Your Understanding</h2>
+
+    <div class="quiz">
+      <div id="q1">
+        <h3>Question 1</h3>
+        <p class="quiz-q">Which of the following is always a normal subgroup of any group G?</p>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this, false, 'q1', 'Not necessarily — only in abelian groups.')">Any subgroup H ≤ G</button>
+          <button class="quiz-option" onclick="answer(this, true, 'q1', 'Correct! The center Z(G) commutes with everything, so conjugation fixes it pointwise.')">The center Z(G)</button>
+          <button class="quiz-option" onclick="answer(this, false, 'q1', 'Not always — this requires G to have a unique subgroup of that order.')">Any subgroup of prime order</button>
+          <button class="quiz-option" onclick="answer(this, false, 'q1', 'Not always. G could be simple, with no proper normal subgroups.')">Any maximal subgroup</button>
+        </div>
+        <div class="quiz-feedback" id="q1-feedback"></div>
+      </div>
+    </div>
+
+    <div class="quiz">
+      <div id="q2">
+        <h3>Question 2</h3>
+        <p class="quiz-q">If [G : H] = 2 (H has index 2 in G), then:</p>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this, false, 'q2', 'Not necessarily — G/H being defined requires H ◁ G, which index 2 gives us, but G/H ≅ ℤ₂, not that H ≅ ℤ₂.')">H is isomorphic to ℤ₂</button>
+          <button class="quiz-option" onclick="answer(this, true, 'q2', 'Correct! Any subgroup of index 2 is automatically normal, since the two left cosets must equal the two right cosets.')">H is normal in G</button>
+          <button class="quiz-option" onclick="answer(this, false, 'q2', 'H must be normal (as above), but it need not be the center unless G is abelian.')">H equals the center Z(G)</button>
+          <button class="quiz-option" onclick="answer(this, false, 'q2', 'The quotient G/H has order 2, making it ≅ ℤ₂ — but H itself can be any size.')">G/H is trivial</button>
+        </div>
+        <div class="quiz-feedback" id="q2-feedback"></div>
+      </div>
+    </div>
+
+    <div class="quiz">
+      <div id="q3">
+        <h3>Question 3</h3>
+        <p class="quiz-q">Let φ : G → H be a group homomorphism. What can we say about ker(φ)?</p>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this, false, 'q3', 'Close — ker(φ) ◁ G, but it need not equal G unless φ is the trivial homomorphism.')">ker(φ) = G</button>
+          <button class="quiz-option" onclick="answer(this, false, 'q3', 'The kernel is a subgroup of G, not of H.')">ker(φ) is a subgroup of H</button>
+          <button class="quiz-option" onclick="answer(this, true, 'q3', 'Correct! The kernel of any homomorphism is always a normal subgroup of the domain.')">ker(φ) is a normal subgroup of G</button>
+          <button class="quiz-option" onclick="answer(this, false, 'q3', 'The kernel is trivial ({e}) only when φ is injective.')">ker(φ) = {e} always</button>
+        </div>
+        <div class="quiz-feedback" id="q3-feedback"></div>
+      </div>
+    </div>
+
+    <div class="quiz">
+      <div id="q4">
+        <h3>Question 4</h3>
+        <p class="quiz-q">A finite group G is called simple if:</p>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="answer(this, false, 'q4', 'That\'s the definition of a cyclic group.')">G is generated by a single element</button>
+          <button class="quiz-option" onclick="answer(this, false, 'q4', 'That\'s a p-group, not the definition of simple.')">|G| is a prime number</button>
+          <button class="quiz-option" onclick="answer(this, true, 'q4', 'Correct! Simple groups have no proper nontrivial normal subgroups. They are the building blocks of all finite groups.')">G has no proper nontrivial normal subgroups</button>
+          <button class="quiz-option" onclick="answer(this, false, 'q4', 'That\'s the definition of an abelian group.')">Every element commutes with every other</button>
+        </div>
+        <div class="quiz-feedback" id="q4-feedback"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHEAT SHEET -->
+  <section>
+    <div class="section-label">§ 9</div>
+    <h2>Summary — Quick Reference</h2>
+    <div class="cheatsheet">
+      <h3>Normal Subgroups at a Glance</h3>
+      <div class="cs-grid">
+        <div class="cs-item">
+          <div class="cs-title">Definition</div>
+          <div class="cs-body">N ◁ G iff gNg⁻¹ = N for all g ∈ G</div>
+        </div>
+        <div class="cs-item">
+          <div class="cs-title">Coset Form</div>
+          <div class="cs-body">N ◁ G iff gN = Ng for all g ∈ G</div>
+        </div>
+        <div class="cs-item">
+          <div class="cs-title">Kernel Characterization</div>
+          <div class="cs-body">N ◁ G iff N = ker(φ) for some homo φ : G → H</div>
+        </div>
+        <div class="cs-item">
+          <div class="cs-title">Conjugacy Classes</div>
+          <div class="cs-body">N ◁ G iff N is a union of conjugacy classes of G</div>
+        </div>
+        <div class="cs-item">
+          <div class="cs-title">Quotient Group</div>
+          <div class="cs-body">G/N = {gN : g ∈ G} forms group under (aN)(bN)=(ab)N</div>
+        </div>
+        <div class="cs-item">
+          <div class="cs-title">Order Formula</div>
+          <div class="cs-body">|G/N| = |G|/|N| = [G:N]</div>
+        </div>
+        <div class="cs-item">
+          <div class="cs-title">Index 2 Rule</div>
+          <div class="cs-body">[G:H] = 2 ⟹ H ◁ G (automatic)</div>
+        </div>
+        <div class="cs-item">
+          <div class="cs-title">1st Isom. Theorem</div>
+          <div class="cs-body">G/ker(φ) ≅ Im(φ) for any homo φ : G → H</div>
+        </div>
+        <div class="cs-item">
+          <div class="cs-title">Key Examples</div>
+          <div class="cs-body">Aₙ ◁ Sₙ; Z(G) ◁ G; ker(φ) ◁ G; SL(n) ◁ GL(n)</div>
+        </div>
+        <div class="cs-item">
+          <div class="cs-title">Not Transitive!</div>
+          <div class="cs-body">K ◁ H, H ◁ G does NOT imply K ◁ G</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+// PROGRESS BAR
+window.addEventListener('scroll', () => {
+  const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+  const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  document.getElementById('progressBar').style.width = (winScroll / height * 100) + '%';
+});
+
+// SECTION REVEAL
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('section').forEach(s => observer.observe(s));
+
+// PROOF TOGGLES
+function toggleProof(id) {
+  const body = document.getElementById(id);
+  const btn = body.previousElementSibling;
+  body.classList.toggle('open');
+  btn.classList.toggle('open');
+}
+
+// QUIZ
+function answer(btn, correct, qid, msg) {
+  const parent = document.getElementById(qid);
+  parent.querySelectorAll('.quiz-option').forEach(b => b.disabled = true);
+  btn.classList.add(correct ? 'correct' : 'wrong');
+  const fb = document.getElementById(qid + '-feedback');
+  fb.textContent = (correct ? '✓ ' : '✗ ') + msg;
+  fb.className = 'quiz-feedback show ' + (correct ? 'correct' : 'wrong');
+}
+
+// COSET VISUALIZER
+const cosetData = {
+  A3: {
+    label: 'N = A₃ = {e, (123), (132)}',
+    left: [
+      { name: 'e·N', els: 'e, (123), (132)' },
+      { name: '(12)·N', els: '(12),(13),(23)' }
+    ],
+    right: [
+      { name: 'N·e', els: 'e, (123), (132)' },
+      { name: 'N·(12)', els: '(12),(13),(23)' }
+    ],
+    normal: true
+  },
+  H12: {
+    label: 'H = {e, (12)}',
+    left: [
+      { name: 'e·H', els: 'e, (12)' },
+      { name: '(13)·H', els: '(13),(132)' },
+      { name: '(23)·H', els: '(23),(123)' }
+    ],
+    right: [
+      { name: 'H·e', els: 'e, (12)' },
+      { name: 'H·(13)', els: '(13),(123)' },
+      { name: 'H·(23)', els: '(23),(132)' }
+    ],
+    normal: false
+  },
+  H13: {
+    label: 'H = {e, (13)}',
+    left: [
+      { name: 'e·H', els: 'e, (13)' },
+      { name: '(12)·H', els: '(12),(132)' },
+      { name: '(23)·H', els: '(23),(123)' }
+    ],
+    right: [
+      { name: 'H·e', els: 'e, (13)' },
+      { name: 'H·(12)', els: '(12),(123)' },
+      { name: 'H·(23)', els: '(23),(132)' }
+    ],
+    normal: false
+  }
+};
+
+function showCosets(key) {
+  document.querySelectorAll('.vis-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + key).classList.add('active');
+  const d = cosetData[key];
+  let html = '<div style="width:100%"><div style="font-family:monospace;font-size:0.75rem;color:#888;margin-bottom:0.7rem">' + d.label + '</div></div>';
+  html += '<div style="display:flex;gap:1rem;flex-wrap:wrap;width:100%">';
+  html += '<div><div style="font-family:monospace;font-size:0.68rem;color:#7ecb8f;letter-spacing:0.1em;margin-bottom:0.5rem">LEFT COSETS</div><div style="display:flex;gap:0.7rem;flex-wrap:wrap">';
+  d.left.forEach(c => {
+    html += `<div class="coset-card left"><div class="coset-name">${c.name}</div><div class="coset-els">{${c.els}}</div></div>`;
+  });
+  html += '</div></div>';
+  html += '<div><div style="font-family:monospace;font-size:0.68rem;color:#e08070;letter-spacing:0.1em;margin-bottom:0.5rem">RIGHT COSETS</div><div style="display:flex;gap:0.7rem;flex-wrap:wrap">';
+  d.right.forEach(c => {
+    html += `<div class="coset-card right"><div class="coset-name">${c.name}</div><div class="coset-els">{${c.els}}</div></div>`;
+  });
+  html += '</div></div></div>';
+  document.getElementById('cosetDisplay').innerHTML = html;
+  const res = document.getElementById('visResult');
+  if (d.normal) {
+    res.className = 'vis-result normal';
+    res.textContent = '✓ Left cosets = Right cosets → This IS a normal subgroup of S₃';
+  } else {
+    res.className = 'vis-result notnormal';
+    res.textContent = '✗ Left cosets ≠ Right cosets → This is NOT a normal subgroup of S₃';
+  }
+}
+
+showCosets('A3');
+</script>
+</body>
+</html>
