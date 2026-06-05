@@ -1,1 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Field Extensions — Math Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0e0e1f;
+    --paper: #f5f4fe;
+    --cream: #ebe8fc;
+    --indigo: #3a28c0;
+    --indigo-light: #d0cbf8;
+    --rust: #9b2a50;
+    --teal: #1a6b5a;
+    --muted: #4a4870;
+    --border: #c0b8e8;
+    --gold: #8a6010;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Source Serif 4',Georgia,serif; background:var(--paper); color:var(--ink); line-height:1.75; font-size:17px; }
+  .progress-bar { position:fixed; top:0; left:0; height:3px; background:linear-gradient(90deg,var(--indigo),var(--rust)); width:0%; z-index:1000; transition:width 0.1s; }
+  header { background:var(--ink); color:var(--paper); padding:3rem 2rem 2.5rem; text-align:center; position:relative; overflow:hidden; }
+  header::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(-60deg,transparent,transparent 45px,rgba(58,40,192,0.12) 45px,rgba(58,40,192,0.12) 46px); }
+  header .back-link { position:absolute; top:1.2rem; left:1.5rem; font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.1em; color:rgba(245,244,254,0.5); text-decoration:none; text-transform:uppercase; transition:color 0.2s; }
+  header .back-link:hover { color:var(--paper); }
+  header .subtitle { font-family:'IBM Plex Mono',monospace; font-size:0.72rem; letter-spacing:0.25em; text-transform:uppercase; color:#9888f0; margin-bottom:0.8rem; }
+  header h1 { font-family:'Playfair Display',serif; font-size:clamp(2.2rem,6vw,3.8rem); font-weight:700; line-height:1.1; }
+  header h1 em { color:#9888f0; font-style:italic; }
+  header .tagline { margin-top:1rem; color:#7870a0; font-size:1rem; font-style:italic; }
+  nav { background:var(--cream); border-bottom:2px solid var(--border); padding:0 1rem; display:flex; overflow-x:auto; }
+  nav a { font-family:'IBM Plex Mono',monospace; font-size:0.72rem; letter-spacing:0.05em; text-transform:uppercase; color:var(--muted); text-decoration:none; padding:0.9rem 1.2rem; border-bottom:3px solid transparent; white-space:nowrap; transition:all 0.2s; }
+  nav a:hover { color:var(--indigo); border-bottom-color:var(--indigo); }
+  .container { max-width:860px; margin:0 auto; padding:3rem 1.5rem 5rem; }
+  section { margin-bottom:4rem; opacity:0; transform:translateY(18px); transition:opacity 0.5s,transform 0.5s; }
+  section.visible { opacity:1; transform:translateY(0); }
+  .section-label { font-family:'IBM Plex Mono',monospace; font-size:0.65rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--indigo); margin-bottom:0.5rem; }
+  h2 { font-family:'Playfair Display',serif; font-size:1.9rem; font-weight:700; border-bottom:2px solid var(--border); padding-bottom:0.5rem; margin-bottom:1.5rem; }
+  h3 { font-family:'Playfair Display',serif; font-size:1.25rem; color:var(--indigo); margin:1.8rem 0 0.7rem; }
+  p { margin-bottom:1rem; }
+  .def-box { border-left:4px solid var(--indigo); background:linear-gradient(135deg,#eeeafc,#e6e0fa); padding:1.4rem 1.6rem; margin:1.5rem 0; border-radius:0 8px 8px 0; box-shadow:2px 2px 12px rgba(0,0,0,0.05); }
+  .def-box .def-label { font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--indigo); margin-bottom:0.5rem; }
+  .def-box p { margin:0; }
+  .thm-box { border:2px solid var(--indigo); background:#eeeafc; padding:1.4rem 1.6rem; margin:1.5rem 0; border-radius:8px; }
+  .thm-box .thm-label { font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--indigo); margin-bottom:0.5rem; }
+  .eg-box { border-left:4px solid var(--teal); background:#eaf4f0; padding:1.4rem 1.6rem; margin:1.5rem 0; border-radius:0 8px 8px 0; }
+  .eg-box .eg-label { font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--teal); margin-bottom:0.5rem; }
+  .note-box { border-left:4px solid var(--rust); background:#faeaf0; padding:1.2rem 1.4rem; margin:1.5rem 0; border-radius:0 8px 8px 0; font-size:0.93rem; }
+  .math { font-family:'IBM Plex Mono',monospace; background:rgba(0,0,0,0.06); padding:0.1em 0.35em; border-radius:3px; font-size:0.92em; }
+  .math-block { font-family:'IBM Plex Mono',monospace; background:var(--ink); color:#b0a0f8; padding:1.2rem 1.6rem; border-radius:8px; margin:1.2rem 0; font-size:0.9rem; line-height:1.9; overflow-x:auto; }
+  .proof-toggle { background:none; border:1.5px solid var(--border); border-radius:6px; padding:0.6rem 1.1rem; font-family:'IBM Plex Mono',monospace; font-size:0.75rem; letter-spacing:0.05em; text-transform:uppercase; cursor:pointer; color:var(--muted); margin:0.5rem 0 1rem; transition:all 0.2s; display:flex; align-items:center; gap:0.5rem; }
+  .proof-toggle:hover { color:var(--indigo); border-color:var(--indigo); }
+  .proof-toggle .arrow { transition:transform 0.2s; display:inline-block; }
+  .proof-toggle.open .arrow { transform:rotate(90deg); }
+  .proof-body { display:none; background:#f0eefe; border-left:3px solid var(--border); padding:1.2rem 1.5rem; border-radius:0 8px 8px 0; margin-bottom:1.5rem; font-size:0.93rem; }
+  .proof-body.open { display:block; }
+  .quiz { background:var(--cream); border:2px solid var(--border); border-radius:12px; padding:2rem; margin:2rem 0; }
+  .quiz h3 { margin-top:0; color:var(--ink); font-size:1.1rem; }
+  .quiz-q { margin-bottom:1rem; }
+  .quiz-options { display:flex; flex-direction:column; gap:0.5rem; }
+  .quiz-option { background:white; border:1.5px solid var(--border); border-radius:6px; padding:0.75rem 1rem; cursor:pointer; font-family:'Source Serif 4',serif; font-size:0.93rem; text-align:left; transition:all 0.15s; color:var(--ink); }
+  .quiz-option:hover { border-color:var(--indigo); background:#f0eefe; }
+  .quiz-option.correct { border-color:var(--teal); background:#e0f2ec; color:var(--teal); }
+  .quiz-option.wrong { border-color:var(--rust); background:#faeaf0; color:var(--rust); }
+  .quiz-feedback { display:none; padding:0.8rem 1rem; border-radius:6px; font-size:0.9rem; margin-top:0.5rem; }
+  .quiz-feedback.show { display:block; }
+  .quiz-feedback.correct { background:#e0f2ec; color:var(--teal); border-left:3px solid var(--teal); }
+  .quiz-feedback.wrong { background:#faeaf0; color:var(--rust); border-left:3px solid var(--rust); }
+  .cheatsheet { background:var(--ink); color:var(--paper); border-radius:12px; padding:2rem; margin:2rem 0; }
+  .cheatsheet h3 { color:#9888f0; font-family:'IBM Plex Mono',monospace; font-size:0.78rem; letter-spacing:0.2em; text-transform:uppercase; margin:0 0 1.2rem; }
+  .cs-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  @media(max-width:600px){.cs-grid{grid-template-columns:1fr;}}
+  .cs-item { background:rgba(255,255,255,0.05); border-radius:6px; padding:1rem; }
+  .cs-item .cs-title { font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:#9888f0; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.4rem; }
+  .cs-item .cs-body { color:#9890c0; font-family:'IBM Plex Mono',monospace; font-size:0.82rem; line-height:1.6; }
+  ul,ol { padding-left:1.5rem; margin-bottom:1rem; }
+  li { margin-bottom:0.3rem; }
+  hr.divider { border:none; border-top:2px solid var(--border); margin:2.5rem 0; }
 
+  /* Tower diagram */
+  .tower { display:flex; flex-direction:column; align-items:center; gap:0; margin:1.5rem auto; max-width:260px; }
+  .tower-field { background:var(--ink); color:var(--paper); font-family:'IBM Plex Mono',monospace; font-size:0.9rem; padding:0.5rem 1.6rem; border-radius:6px; text-align:center; position:relative; z-index:1; }
+  .tower-field.highlight { background:var(--indigo); }
+  .tower-line { display:flex; align-items:center; gap:0.5rem; }
+  .tower-bar { width:2px; height:36px; background:var(--border); }
+  .tower-deg { font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--indigo); letter-spacing:0.05em; }
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+<header>
+  <a href="../index.html" class="back-link">← Back to Notes</a>
+  <div class="subtitle">Abstract Algebra · Field Theory</div>
+  <h1><em>Field</em> Extensions</h1>
+  <p class="tagline">Growing fields by adjoining new elements — the gateway to Galois theory</p>
+</header>
+<nav>
+  <a href="#fields">Fields</a>
+  <a href="#extensions">Extensions</a>
+  <a href="#degree">Degree</a>
+  <a href="#algebraic">Algebraic Elements</a>
+  <a href="#minimal-poly">Minimal Polynomial</a>
+  <a href="#constructions">Constructions</a>
+  <a href="#tower">Tower Law</a>
+  <a href="#quiz">Quiz</a>
+</nav>
+
+<div class="container">
+
+  <section id="fields">
+    <div class="section-label">§ 1</div>
+    <h2>Fields — A Recap</h2>
+    <div class="def-box">
+      <div class="def-label">Definition — Field</div>
+      <p>A <strong>field</strong> is a commutative ring F with unity where every nonzero element has a multiplicative inverse. Equivalently, F is a commutative ring in which the only ideals are {0} and F.</p>
+    </div>
+    <div class="eg-box">
+      <div class="eg-label">Examples of Fields</div>
+      <ul style="margin:0">
+        <li><strong>ℚ</strong> — rationals (smallest field of characteristic 0)</li>
+        <li><strong>ℝ</strong> — reals</li>
+        <li><strong>ℂ</strong> — complex numbers (algebraically closed)</li>
+        <li><strong>ℤₚ = 𝔽ₚ</strong> — integers mod prime p (finite field, characteristic p)</li>
+        <li><strong>𝔽_{pⁿ}</strong> — finite fields with pⁿ elements (unique up to isomorphism)</li>
+        <li><strong>ℚ(√2)</strong> — rationals adjoined √2</li>
+      </ul>
+    </div>
+    <p>Every field F has a <strong>characteristic</strong>: the smallest n > 0 with n·1 = 0 (or 0 if no such n exists). The characteristic is always 0 or a prime p.</p>
+  </section>
+
+  <section id="extensions">
+    <div class="section-label">§ 2</div>
+    <h2>Field Extensions</h2>
+
+    <div class="def-box">
+      <div class="def-label">Definition — Field Extension</div>
+      <p>A field extension is a pair of fields F ⊆ E where F is a subfield of E. We write <strong>E/F</strong> (read "E over F") and call E an <strong>extension field</strong> of F, and F the <strong>base field</strong>.</p>
+    </div>
+
+    <p>Crucially: since F ⊆ E, we can view E as a <strong>vector space over F</strong>. The elements of E are vectors; the elements of F act as scalars via the field multiplication in E.</p>
+
+    <div class="eg-box">
+      <div class="eg-label">Examples</div>
+      <ul style="margin:0">
+        <li><strong>ℂ/ℝ</strong> — complex over reals. Basis: {1, i}. Dimension 2.</li>
+        <li><strong>ℝ/ℚ</strong> — reals over rationals. Infinite-dimensional.</li>
+        <li><strong>ℚ(√2)/ℚ</strong> — rationals adjoin √2. Basis: {1, √2}. Dimension 2.</li>
+        <li><strong>ℚ(∛2)/ℚ</strong> — rationals adjoin ∛2. Basis: {1, ∛2, ∛4}. Dimension 3.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="degree">
+    <div class="section-label">§ 3</div>
+    <h2>The Degree of an Extension</h2>
+
+    <div class="def-box">
+      <div class="def-label">Definition — Degree</div>
+      <p>The <strong>degree</strong> of a field extension E/F, written [E : F], is the dimension of E as a vector space over F.</p>
+    </div>
+
+    <div class="math-block">
+  [E : F]  =  dim_F(E)
+
+  Finite extension:   [E : F] < ∞
+  Infinite extension: [E : F] = ∞
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Computing Degrees</div>
+      <ul style="margin:0">
+        <li>[ℂ : ℝ] = 2 &nbsp; (basis {1, i})</li>
+        <li>[ℚ(√2) : ℚ] = 2 &nbsp; (basis {1, √2})</li>
+        <li>[ℚ(∛2) : ℚ] = 3 &nbsp; (basis {1, ∛2, ∛4})</li>
+        <li>[ℝ : ℚ] = ∞ &nbsp; (ℝ is not finitely generated over ℚ)</li>
+        <li>[𝔽_{p²} : 𝔽_p] = 2 &nbsp; (any degree-2 extension of 𝔽_p)</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="algebraic">
+    <div class="section-label">§ 4</div>
+    <h2>Algebraic and Transcendental Elements</h2>
+
+    <div class="def-box">
+      <div class="def-label">Definition — Algebraic Element</div>
+      <p>Let E/F be a field extension and α ∈ E. We say α is <strong>algebraic over F</strong> if α is a root of some nonzero polynomial f(x) ∈ F[x]. Otherwise α is <strong>transcendental over F</strong>.</p>
+    </div>
+
+    <div class="math-block">
+  α algebraic over F  ⟺  ∃ f(x) ∈ F[x], f ≠ 0, with f(α) = 0
+
+  α transcendental over F  ⟺  no such polynomial exists
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Examples</div>
+      <ul style="margin:0">
+        <li>√2 is algebraic over ℚ: root of x²−2</li>
+        <li>i is algebraic over ℝ: root of x²+1</li>
+        <li>∛5 is algebraic over ℚ: root of x³−5</li>
+        <li>π is <strong>transcendental</strong> over ℚ (Lindemann, 1882)</li>
+        <li>e is <strong>transcendental</strong> over ℚ (Hermite, 1873)</li>
+        <li>Every element of 𝔽_q is algebraic over 𝔽_p (finite fields are algebraic)</li>
+      </ul>
+    </div>
+
+    <div class="def-box">
+      <div class="def-label">Definition — Algebraic Extension</div>
+      <p>A field extension E/F is <strong>algebraic</strong> if every element of E is algebraic over F. Every finite extension is algebraic.</p>
+    </div>
+
+    <button class="proof-toggle" onclick="toggleProof('pf-fin-alg')"><span class="arrow">▶</span> Proof: finite ⟹ algebraic</button>
+    <div class="proof-body" id="pf-fin-alg">
+      Suppose [E : F] = n and let α ∈ E. Consider the n+1 elements 1, α, α², …, αⁿ in E. Since dim_F(E) = n, these must be linearly dependent over F. So there exist a₀, a₁, …, aₙ ∈ F, not all zero, with a₀ + a₁α + … + aₙαⁿ = 0. This gives a nonzero polynomial f(x) = a₀ + a₁x + … + aₙxⁿ ∈ F[x] with f(α) = 0. So α is algebraic over F. ∎
+    </div>
+  </section>
+
+  <section id="minimal-poly">
+    <div class="section-label">§ 5</div>
+    <h2>The Minimal Polynomial</h2>
+
+    <div class="def-box">
+      <div class="def-label">Definition — Minimal Polynomial</div>
+      <p>Let α be algebraic over F. The <strong>minimal polynomial</strong> of α over F, written min_F(α) or irr(α, F), is the monic polynomial of least degree in F[x] having α as a root.</p>
+    </div>
+
+    <div class="thm-box">
+      <div class="thm-label">Theorem — Properties of the Minimal Polynomial</div>
+      <p>Let m(x) = min_F(α). Then:</p>
+      <ol style="padding-left:1.5rem; margin:0.5rem 0;">
+        <li>m(x) is unique and irreducible over F</li>
+        <li>m(x) divides every polynomial in F[x] having α as a root</li>
+        <li>F[x]/⟨m(x)⟩ ≅ F(α) — the simple extension generated by α</li>
+        <li>[F(α) : F] = deg(m(x))</li>
+      </ol>
+    </div>
+
+    <button class="proof-toggle" onclick="toggleProof('pf-minpoly')"><span class="arrow">▶</span> Proof sketch</button>
+    <div class="proof-body" id="pf-minpoly">
+      Consider the evaluation homomorphism ev_α : F[x] → E, f ↦ f(α). Its kernel is the set of all polynomials vanishing at α, which is an ideal I of F[x]. Since F[x] is a PID, I = ⟨m(x)⟩ for some generator m(x), which we choose monic. Since E is a field, Im(ev_α) = F[α] is an integral domain, so ⟨m(x)⟩ is a prime ideal of F[x], hence m(x) is irreducible (prime = irreducible in F[x]). By the First Isomorphism Theorem: F[x]/⟨m(x)⟩ ≅ F[α] = F(α) (since F(α) is the smallest field containing F and α, and it equals F[α] when α is algebraic). ∎
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Computing Minimal Polynomials</div>
+      <ul style="margin:0">
+        <li>min_ℚ(√2) = x²−2 &nbsp; (irreducible over ℚ by Eisenstein at p=2)</li>
+        <li>min_ℚ(∛2) = x³−2 &nbsp; (irreducible by Eisenstein at p=2)</li>
+        <li>min_ℚ(i) = x²+1 &nbsp; (irreducible over ℚ)</li>
+        <li>min_ℝ(i) = x²+1 &nbsp; (still irreducible over ℝ)</li>
+        <li>min_ℚ(√2+√3) = x⁴−10x²+1 &nbsp; (degree 4; splits into linear factors over ℚ(√2,√3))</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="constructions">
+    <div class="section-label">§ 6</div>
+    <h2>Constructing Extensions</h2>
+
+    <h3>Simple Extensions: F(α)</h3>
+    <p>Given E/F and α ∈ E, the <strong>simple extension</strong> F(α) is the smallest subfield of E containing both F and α:</p>
+    <div class="math-block">
+  If α is algebraic with min poly m(x) of degree n:
+    F(α) ≅ F[x]/⟨m(x)⟩
+    [F(α) : F] = n
+    Basis: {1, α, α², …, αⁿ⁻¹}
+
+  If α is transcendental:
+    F(α) ≅ F(x)  (field of rational functions)
+    [F(α) : F] = ∞
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Example — ℚ(√2)</div>
+      <p>min_ℚ(√2) = x²−2, degree 2. So ℚ(√2) = {a + b√2 : a,b ∈ ℚ} with [ℚ(√2):ℚ] = 2. Addition is componentwise; multiplication uses (√2)² = 2. The inverse of a+b√2 (nonzero) is (a−b√2)/(a²−2b²).</p>
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Example — ℚ(ζ₃) where ζ₃ = e^{2πi/3}</div>
+      <p>ζ₃ is a primitive cube root of unity, satisfying ζ₃³ = 1 and ζ₃² + ζ₃ + 1 = 0. The minimal polynomial is x²+x+1 (degree 2, irreducible over ℚ). So ℚ(ζ₃) = {a + bζ₃ : a,b ∈ ℚ} and [ℚ(ζ₃) : ℚ] = 2.</p>
+    </div>
+
+    <h3>Splitting Fields</h3>
+    <div class="def-box">
+      <div class="def-label">Definition — Splitting Field</div>
+      <p>A <strong>splitting field</strong> of f(x) ∈ F[x] over F is the smallest extension E/F over which f splits completely into linear factors:</p>
+    </div>
+    <div class="math-block">
+  f(x) = a(x − α₁)(x − α₂)···(x − αₙ)  in E[x]
+
+  E = F(α₁, α₂, …, αₙ)  is the splitting field.
+    </div>
+
+    <div class="thm-box">
+      <div class="thm-label">Theorem</div>
+      <p>Every polynomial f(x) ∈ F[x] has a splitting field over F, and any two splitting fields of f over F are isomorphic (though not necessarily equal).</p>
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Splitting Field Examples</div>
+      <ul style="margin:0">
+        <li>Splitting field of x²−2 over ℚ is ℚ(√2) — both roots ±√2 live here.</li>
+        <li>Splitting field of x³−2 over ℚ is ℚ(∛2, ω) where ω = e^{2πi/3}. Degree 6 over ℚ.</li>
+        <li>Splitting field of xⁿ−1 over ℚ is ℚ(ζₙ) where ζₙ is a primitive nth root of unity (cyclotomic field).</li>
+        <li>ℂ is the splitting field of every polynomial over ℝ (and over any real closed field).</li>
+      </ul>
+    </div>
+
+    <h3>Algebraic Closure</h3>
+    <div class="def-box">
+      <div class="def-label">Definition — Algebraically Closed / Algebraic Closure</div>
+      <p>A field F is <strong>algebraically closed</strong> if every nonconstant polynomial in F[x] has a root in F. The <strong>algebraic closure</strong> F̄ of F is the smallest algebraically closed field containing F.</p>
+    </div>
+    <p>Examples: ℂ is algebraically closed (Fundamental Theorem of Algebra). ℝ̄ = ℂ. The algebraic closure of ℚ is the field of all algebraic numbers, denoted Q̄ ⊂ ℂ.</p>
+  </section>
+
+  <section id="tower">
+    <div class="section-label">§ 7</div>
+    <h2>The Tower Law</h2>
+    <p>The Tower Law is the fundamental counting tool for field extensions, analogous to Lagrange's theorem for groups.</p>
+
+    <div class="thm-box">
+      <div class="thm-label">Tower Law (Multiplicativity of Degree)</div>
+      <p>If F ⊆ K ⊆ E are fields (a "tower"), then:</p>
+      <div class="math-block" style="margin:0.7rem 0 0;">[E : F]  =  [E : K] · [K : F]</div>
+      <p style="margin-top:0.5rem; margin-bottom:0">In particular, [E : F] is finite iff both [E : K] and [K : F] are finite.</p>
+    </div>
+
+    <div class="tower">
+      <div class="tower-field highlight">E</div>
+      <div class="tower-line"><div class="tower-bar"></div><div class="tower-deg">[E:K]</div></div>
+      <div class="tower-field">K</div>
+      <div class="tower-line"><div class="tower-bar"></div><div class="tower-deg">[K:F]</div></div>
+      <div class="tower-field">F</div>
+      <div style="margin-top:0.8rem; font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:var(--indigo);">[E:F] = [E:K]·[K:F]</div>
+    </div>
+
+    <button class="proof-toggle" onclick="toggleProof('pf-tower')"><span class="arrow">▶</span> Proof</button>
+    <div class="proof-body" id="pf-tower">
+      Let {αᵢ} be a basis of E over K and {βⱼ} a basis of K over F. Claim: {αᵢβⱼ} is a basis of E over F.<br><br>
+      <strong>Spanning:</strong> Any e ∈ E writes as e = Σᵢ kᵢαᵢ with kᵢ ∈ K. Each kᵢ = Σⱼ fᵢⱼβⱼ with fᵢⱼ ∈ F. So e = Σᵢⱼ fᵢⱼ(αᵢβⱼ). ✓<br><br>
+      <strong>Linear independence:</strong> If Σᵢⱼ fᵢⱼ(αᵢβⱼ) = 0 then Σᵢ(Σⱼ fᵢⱼβⱼ)αᵢ = 0. Since αᵢ are linearly independent over K: Σⱼ fᵢⱼβⱼ = 0 for all i. Since βⱼ are linearly independent over F: fᵢⱼ = 0 for all i,j. ✓<br><br>
+      So dim_F(E) = |{αᵢβⱼ}| = [E:K]·[K:F]. ∎
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Example — ℚ ⊆ ℚ(√2) ⊆ ℚ(√2, √3)</div>
+      <p>[ℚ(√2):ℚ] = 2. Now √3 ∉ ℚ(√2) (since √3/√2 = √(3/2) ∉ ℚ), so [ℚ(√2,√3):ℚ(√2)] = 2. By Tower Law: [ℚ(√2,√3):ℚ] = 2·2 = 4. Basis over ℚ: {1, √2, √3, √6}.</p>
+    </div>
+
+    <div class="eg-box">
+      <div class="eg-label">Example — ℚ ⊆ ℚ(∛2) ⊆ ℚ(∛2, ω)</div>
+      <p>[ℚ(∛2):ℚ] = 3. ω = e^{2πi/3} satisfies ω²+ω+1=0 so [ℚ(ω):ℚ]=2. Since ω ∉ ℚ(∛2) (real field), [ℚ(∛2,ω):ℚ(∛2)] = 2. Tower Law: [ℚ(∛2,ω):ℚ] = 3·2 = 6. This is the splitting field of x³−2, and its Galois group is S₃.</p>
+    </div>
+
+    <h3>Degrees Divide</h3>
+    <div class="thm-box">
+      <div class="thm-label">Corollary</div>
+      <p>If α is algebraic over F with [F(α):F] = n, and E/F is any extension with α ∈ E, then n | [E:F].</p>
+    </div>
+    <p>This is the field extension analogue of Lagrange's theorem: the degree of a subextension divides the degree of the full extension.</p>
+
+    <div class="note-box">
+      <strong>Application — Impossibility of Classical Constructions:</strong> Doubling the cube requires constructing ∛2. But [ℚ(∛2):ℚ] = 3. Any straightedge-and-compass construction produces extensions of degree a power of 2. Since 3 does not divide any power of 2, ∛2 cannot be so constructed. <em>This proves the ancient problem is impossible.</em>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="quiz">
+    <div class="section-label">§ 8</div>
+    <h2>Check Your Understanding</h2>
+
+    <div class="quiz">
+      <h3>Question 1</h3>
+      <p class="quiz-q">What is [ℚ(∛2, i) : ℚ]?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this,false,'q1','[ℚ(∛2):ℚ]=3 and [ℚ(i):ℚ]=2. Since gcd(2,3)=1, the composite has degree 3·2=6.')">3</button>
+        <button class="quiz-option" onclick="answer(this,false,'q1','5 is not possible — degrees multiply in towers and 5 = 3+2 is not how it works.')">5</button>
+        <button class="quiz-option" onclick="answer(this,true,'q1','Correct! [ℚ(∛2):ℚ]=3 and [ℚ(∛2,i):ℚ(∛2)]=2 (since i satisfies x²+1, irreducible over ℝ ⊇ ℚ(∛2)). Tower Law: 3·2=6.')">6</button>
+        <button class="quiz-option" onclick="answer(this,false,'q1','8 would require another degree-2 step, but we only adjoin two elements here.')">8</button>
+      </div>
+      <div class="quiz-feedback" id="q1-feedback"></div>
+    </div>
+
+    <div class="quiz">
+      <h3>Question 2</h3>
+      <p class="quiz-q">What is the minimal polynomial of √2 + √3 over ℚ?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this,false,'q2','(x−√2−√3) has irrational coefficients, so it is not in ℚ[x].')">x − √2 − √3</button>
+        <button class="quiz-option" onclick="answer(this,false,'q2','That is the min poly of √6, not √2+√3.')">x² − 6</button>
+        <button class="quiz-option" onclick="answer(this,true,'q2','Correct! Let α = √2+√3. Then α²=5+2√6, so α²−5=2√6, so (α²−5)²=24, giving α⁴−10α²+1=0. This degree-4 poly is irreducible over ℚ.')">x⁴ − 10x² + 1</button>
+        <button class="quiz-option" onclick="answer(this,false,'q2','x²−2√6x−1 has irrational coefficients.')">x² − 2√6·x − 1</button>
+      </div>
+      <div class="quiz-feedback" id="q2-feedback"></div>
+    </div>
+
+    <div class="quiz">
+      <h3>Question 3</h3>
+      <p class="quiz-q">Why can a regular 7-gon be constructed with straightedge and compass?</p>
+      <div class="quiz-options">
+        <button class="quiz-option" onclick="answer(this,false,'q3','7 is prime but that alone does not guarantee constructibility.')">Because 7 is prime</button>
+        <button class="quiz-option" onclick="answer(this,false,'q3','Actually a regular 7-gon CANNOT be constructed — constructibility requires [ℚ(ζ₇):ℚ] = φ(7) = 6 to be a power of 2, but 6 = 2·3 is not.')">Because φ(7) = 6 is even</button>
+        <button class="quiz-option" onclick="answer(this,true,'q3','Correct — it CANNOT be constructed. φ(7)=6 is not a power of 2, so the cyclotomic extension ℚ(ζ₇)/ℚ has degree 6, which is not a power of 2.')">It cannot — [ℚ(ζ₇):ℚ] = 6 is not a power of 2</button>
+        <button class="quiz-option" onclick="answer(this,false,'q3','7 being a Fermat prime would make it constructible, but 7 = 7 is not of the form 2^{2^k}+1.')">Because 7 is a Fermat prime</button>
+      </div>
+      <div class="quiz-feedback" id="q3-feedback"></div>
+    </div>
+  </section>
+
+  <div class="cheatsheet">
+    <h3>Field Extensions — Quick Reference</h3>
+    <div class="cs-grid">
+      <div class="cs-item"><div class="cs-title">Extension E/F</div><div class="cs-body">F ⊆ E; view E as vector space over F</div></div>
+      <div class="cs-item"><div class="cs-title">Degree [E:F]</div><div class="cs-body">dim_F(E); [ℂ:ℝ]=2, [ℚ(√2):ℚ]=2</div></div>
+      <div class="cs-item"><div class="cs-title">Tower Law</div><div class="cs-body">[E:F] = [E:K]·[K:F] for F⊆K⊆E</div></div>
+      <div class="cs-item"><div class="cs-title">Algebraic</div><div class="cs-body">α algebraic ⟺ f(α)=0 for some f∈F[x]</div></div>
+      <div class="cs-item"><div class="cs-title">Minimal Poly</div><div class="cs-body">Monic, irreducible, lowest degree poly vanishing at α</div></div>
+      <div class="cs-item"><div class="cs-title">Simple Extension</div><div class="cs-body">F(α) ≅ F[x]/⟨min poly of α⟩; [F(α):F]=deg(min poly)</div></div>
+      <div class="cs-item"><div class="cs-title">Splitting Field</div><div class="cs-body">Smallest field over which f splits; unique up to iso</div></div>
+      <div class="cs-item"><div class="cs-title">Constructibility</div><div class="cs-body">Constructible iff [ℚ(α):ℚ] is a power of 2</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+window.addEventListener('scroll', () => {
+  const s = document.body.scrollTop || document.documentElement.scrollTop;
+  const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  document.getElementById('progressBar').style.width = (s/h*100) + '%';
+});
+const obs = new IntersectionObserver(e => e.forEach(x => { if(x.isIntersecting) x.target.classList.add('visible'); }), {threshold:0.08});
+document.querySelectorAll('section').forEach(s => obs.observe(s));
+function toggleProof(id) {
+  const b = document.getElementById(id); const btn = b.previousElementSibling;
+  b.classList.toggle('open'); btn.classList.toggle('open');
+}
+function answer(btn, correct, qid, msg) {
+  document.getElementById(qid).querySelectorAll('.quiz-option').forEach(b => b.disabled = true);
+  btn.classList.add(correct ? 'correct' : 'wrong');
+  const fb = document.getElementById(qid+'-feedback');
+  fb.textContent = (correct?'✓ ':'✗ ')+msg;
+  fb.className = 'quiz-feedback show '+(correct?'correct':'wrong');
+}
+</script>
+</body>
+</html>
