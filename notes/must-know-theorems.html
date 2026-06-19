@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Must-Know Theorems — Math Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0e0c18;--paper:#f8f7ff;--cream:#eeecfb;--deep:#2a1a6e;--indigo:#4433cc;--violet:#7c3aed;--gold:#c08010;--rust:#b03060;--teal:#1a7a6a;--muted:#5a5478;--border:#ccc8ec;--green:#1a6b3a;--amber:#b07000;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Source Serif 4',Georgia,serif;background:var(--paper);color:var(--ink);line-height:1.75;font-size:17px;}
+.progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--indigo),var(--violet),var(--rust));width:0%;z-index:1000;transition:width 0.1s;}
+header{background:var(--deep);color:var(--paper);padding:3.5rem 2rem 3rem;text-align:center;position:relative;overflow:hidden;}
+header::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(60deg,transparent,transparent 50px,rgba(124,58,237,0.08) 50px,rgba(124,58,237,0.08) 51px);}
+header::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 100%,rgba(68,51,204,0.25),transparent);}
+header .back-link{position:absolute;top:1.2rem;left:1.5rem;z-index:2;font-family:'IBM Plex Mono',monospace;font-size:0.68rem;letter-spacing:0.1em;color:rgba(248,247,255,0.5);text-decoration:none;text-transform:uppercase;transition:color 0.2s;}
+header .back-link:hover{color:var(--paper);}
+header .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:0.28em;text-transform:uppercase;color:#a090f8;margin-bottom:0.8rem;position:relative;z-index:2;}
+header h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,6vw,4rem);font-weight:700;line-height:1.1;position:relative;z-index:2;}
+header h1 em{color:#b8a8ff;font-style:italic;}
+header .tagline{margin-top:1rem;color:#8878c0;font-size:1rem;font-style:italic;position:relative;z-index:2;}
+nav{background:var(--cream);border-bottom:2px solid var(--border);padding:0 1rem;display:flex;overflow-x:auto;position:sticky;top:0;z-index:100;}
+nav a{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:0.85rem 1.1rem;border-bottom:3px solid transparent;white-space:nowrap;transition:all 0.2s;}
+nav a:hover{color:var(--indigo);border-bottom-color:var(--indigo);}
+.container{max-width:900px;margin:0 auto;padding:3.5rem 1.5rem 6rem;}
+section{margin-bottom:5rem;opacity:0;transform:translateY(20px);transition:opacity 0.55s,transform 0.55s;}
+section.visible{opacity:1;transform:translateY(0);}
+.section-label{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--indigo);margin-bottom:0.4rem;}
+h2{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;border-bottom:2px solid var(--border);padding-bottom:0.5rem;margin-bottom:1.6rem;line-height:1.2;}
+h3{font-family:'Playfair Display',serif;font-size:1.25rem;color:var(--deep);margin:2rem 0 0.7rem;}
+p{margin-bottom:1rem;}
+.fix-banner{background:#fff8e0;border:2px solid var(--amber);border-radius:8px;padding:1rem 1.3rem;margin:1.2rem 0;font-size:0.9rem;}
+.fix-label{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--amber);margin-bottom:0.4rem;}
+.thm-card{border:2px solid var(--border);border-radius:12px;overflow:hidden;margin:1.8rem 0;box-shadow:0 2px 16px rgba(68,51,204,0.06);}
+.thm-card-header{background:var(--deep);color:var(--paper);padding:1rem 1.5rem;display:flex;align-items:center;gap:1rem;}
+.thm-badge{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:4px;padding:0.2rem 0.6rem;white-space:nowrap;color:#b8a8ff;flex-shrink:0;}
+.thm-card-header h3{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--paper);margin:0;font-weight:700;}
+.thm-card-body{background:#f2f0fc;padding:1.4rem 1.6rem;}
+.thm-card-body p{margin-bottom:0.6rem;}
+.thm-card-body p:last-child{margin-bottom:0;}
+.def-box{border-left:4px solid var(--indigo);background:linear-gradient(135deg,#eeeafc,#e8e2f8);padding:1.3rem 1.5rem;margin:1.4rem 0;border-radius:0 8px 8px 0;box-shadow:2px 2px 10px rgba(0,0,0,0.05);}
+.def-label{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--indigo);margin-bottom:0.5rem;}
+.eg-box{border-left:4px solid var(--teal);background:#eaf5f0;padding:1.3rem 1.5rem;margin:1.4rem 0;border-radius:0 8px 8px 0;}
+.eg-label{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--teal);margin-bottom:0.5rem;}
+.note-box{border-left:4px solid var(--rust);background:#faeaf2;padding:1.1rem 1.4rem;margin:1.4rem 0;border-radius:0 8px 8px 0;font-size:0.93rem;}
+.correct-box{border-left:4px solid var(--green);background:#eaf5ee;padding:1.1rem 1.4rem;margin:1.4rem 0;border-radius:0 8px 8px 0;font-size:0.93rem;}
+.correct-label{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--green);margin-bottom:0.4rem;}
+.math{font-family:'IBM Plex Mono',monospace;background:rgba(0,0,0,0.06);padding:0.1em 0.35em;border-radius:3px;font-size:0.91em;}
+.math-block{font-family:'IBM Plex Mono',monospace;background:var(--deep);color:#c0b0ff;padding:1.2rem 1.6rem;border-radius:8px;margin:1.2rem 0;font-size:0.88rem;line-height:2;overflow-x:auto;}
+.proof-toggle{background:none;border:1.5px solid var(--border);border-radius:6px;padding:0.55rem 1rem;font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:0.05em;text-transform:uppercase;cursor:pointer;color:var(--muted);margin:0.6rem 0 0.4rem;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.5rem;}
+.proof-toggle:hover{color:var(--indigo);border-color:var(--indigo);}
+.proof-toggle .arrow{transition:transform 0.2s;display:inline-block;}
+.proof-toggle.open .arrow{transform:rotate(90deg);}
+.proof-body{display:none;background:#f4f2fb;border-left:3px solid var(--border);padding:1.2rem 1.5rem;border-radius:0 8px 8px 0;margin-bottom:1.5rem;font-size:0.93rem;line-height:1.7;}
+.proof-body.open{display:block;}
+.step{margin-bottom:0.9rem;padding-left:1rem;border-left:2px solid var(--border);}
+.step strong{color:var(--indigo);}
+.data-table{width:100%;border-collapse:collapse;margin:1.4rem 0;font-size:0.88rem;}
+.data-table th{background:var(--deep);color:#b8a8ff;font-family:'IBM Plex Mono',monospace;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.7rem 0.9rem;text-align:left;}
+.data-table td{padding:0.75rem 0.9rem;border-bottom:1px solid var(--border);vertical-align:top;}
+.data-table tr:nth-child(even) td{background:var(--cream);}
+.data-table td:first-child{font-family:'IBM Plex Mono',monospace;font-size:0.8rem;color:var(--indigo);white-space:nowrap;}
+.ok{color:var(--green);font-weight:700;}
+.err{color:var(--rust);font-weight:700;}
+hr.divider{border:none;border-top:2px solid var(--border);margin:3rem 0;}
+ul,ol{padding-left:1.5rem;margin-bottom:1rem;}
+li{margin-bottom:0.35rem;}
+@media(max-width:640px){.container{padding:2rem 1.2rem 4rem;}}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+<header>
+  <a href="../index.html" class="back-link">← Back to Notes</a>
+  <div class="eyebrow">Abstract Algebra · Group Theory</div>
+  <h1>Must-Know <em>Theorems</em></h1>
+  <p class="tagline">Core results — every error from the handwritten notes corrected and completed</p>
+</header>
+<nav>
+  <a href="#inner-auto">Inner Automorphisms</a>
+  <a href="#inn-normal">Inn(G) ◁ Aut(G)</a>
+  <a href="#sylow">Sylow's Theorems</a>
+  <a href="#cayley">Cayley's Theorem</a>
+  <a href="#conj-iso">Conjugation Isomorphism</a>
+  <a href="#errors">Error Log</a>
+  <a href="#summary">Summary</a>
+</nav>
+<div class="container">
+
+<!-- § 1 INNER AUTOMORPHISMS -->
+<section id="inner-auto">
+  <div class="section-label">§ 1</div>
+  <h2>Inner Automorphisms</h2>
+
+  <div class="def-box">
+    <div class="def-label">Definition — Inner Automorphism</div>
+    <p>For a fixed element <span class="math">a ∈ G</span>, the map <span class="math">Iₐ : G → G</span> defined by <span class="math">Iₐ(g) = aga⁻¹</span> for all g ∈ G is called the <strong>inner automorphism of G induced by a</strong>.</p>
+  </div>
+
+  <div class="fix-banner">
+    <div class="fix-label">⚠ Error fixed — Page 1 of your notes</div>
+    Your notes wrote <strong>Iₐ(g) = agg⁻¹</strong>. This is wrong — it always equals a, since gg⁻¹ = e. The correct definition is <strong>Iₐ(g) = aga⁻¹</strong>: multiply on the left by a, and on the right by a⁻¹ (not g⁻¹).
+  </div>
+
+  <h3>Worked Example — V₄</h3>
+  <p>Let <span class="math">V₄ = {e, a, b, ab}</span>. Since a² = b² = e, we have a⁻¹ = a and b⁻¹ = b. Since V₄ is <strong>abelian</strong>, xy = yx for all x, y. Compute Iₐ on each element:</p>
+
+  <div class="math-block">
+  Iₐ(e)  = a·e·a⁻¹ = a·e·a = a·a = a² = e
+
+  Iₐ(a)  = a·a·a⁻¹ = a²·a⁻¹ = e·a = a
+
+  Iₐ(b)  = a·b·a⁻¹ = a·b·a
+         Since V₄ is abelian: ab = ba
+         Therefore: a·b·a = b·a·a = b·a² = b·e = b
+
+  Iₐ(ab) = a·(ab)·a⁻¹ = (a·a)·b·a = a²·ba = e·ba = ab
+
+  So Iₐ = identity map on V₄.
+  </div>
+
+  <div class="fix-banner">
+    <div class="fix-label">⚠ Gap fixed — Iₐ(b) step (Page 1)</div>
+    Your notes wrote "aba⁻¹ = b·a·a⁻¹" with no explanation of why a and b could swap positions. You must explicitly state: <strong>"since V₄ is abelian, ab = ba"</strong>. Without that line the step is unjustified and loses marks in an exam.
+  </div>
+
+  <h3>Iₐ is a Homomorphism — Complete Proof</h3>
+
+  <div class="fix-banner">
+    <div class="fix-label">⚠ Incomplete proof fixed — Page 1 (bottom)</div>
+    Your notes inserted aa⁻¹ in the wrong place and the page ended. The key trick is inserting <strong>a⁻¹a = e</strong> (not aa⁻¹) <em>in the middle</em> of the product, between g₁ and g₂.
+  </div>
+
+  <div class="math-block">
+  Iₐ(g₁g₂) = a(g₁g₂)a⁻¹
+
+            = a·g₁·(a⁻¹·a)·g₂·a⁻¹    ← insert a⁻¹a = e between g₁ and g₂
+
+            = (ag₁a⁻¹)·(ag₂a⁻¹)
+
+            = Iₐ(g₁) · Iₐ(g₂)    ✓
+  </div>
+
+  <p>Since Iₐ is also bijective (its inverse is <span class="math">I_{a⁻¹}</span>), we conclude <span class="math">Iₐ ∈ Aut(G)</span>.</p>
+
+  <div class="thm-card">
+    <div class="thm-card-header"><span class="thm-badge">Theorem</span><h3>Inn(G) ≅ G / Z(G)</h3></div>
+    <div class="thm-card-body">
+      <p>The map φ : G → Inn(G), a ↦ Iₐ is a surjective homomorphism with kernel Z(G). So <span class="math">Inn(G) ≅ G/Z(G)</span>. If G is abelian: Z(G) = G, so Inn(G) = {id}.</p>
+    </div>
+  </div>
+
+  <button class="proof-toggle" onclick="tp('pf1')"><span class="arrow">▶</span> Proof: Inn(G) ≤ Aut(G)</button>
+  <div class="proof-body" id="pf1">
+    <div class="step"><strong>Closure:</strong> (Iₐ∘I_b)(g) = Iₐ(bgb⁻¹) = a(bgb⁻¹)a⁻¹ = (ab)g(ab)⁻¹ = I_{ab}(g). So Iₐ∘I_b = I_{ab} ∈ Inn(G). ✓</div>
+    <div class="step"><strong>Identity:</strong> I_e(g) = ege⁻¹ = g = id(g). So I_e = id ∈ Inn(G). ✓</div>
+    <div class="step"><strong>Inverses:</strong> (Iₐ)⁻¹ = I_{a⁻¹} since I_{a⁻¹}(g) = a⁻¹ga = (Iₐ)⁻¹(g). ✓</div>
+    Therefore Inn(G) ≤ Aut(G). ∎
+  </div>
+</section>
+
+<!-- § 2 INN(G) NORMAL IN AUT(G) -->
+<section id="inn-normal">
+  <div class="section-label">§ 2</div>
+  <h2>Inn(G) is Normal in Aut(G)</h2>
+
+  <div class="fix-banner">
+    <div class="fix-label">⚠ Critical error fixed — Pages 2–3 of your notes</div>
+    Your page 2 concluded "I(G) is a subgroup of A(G)" — but the theorem says it is a <strong>normal</strong> subgroup. Subgroup and normal subgroup are different things. Your page 3 assignment asked for the normality proof. That proof was entirely missing from your notes. It is given in full below.
+  </div>
+
+  <div class="thm-card">
+    <div class="thm-card-header"><span class="thm-badge">Theorem</span><h3>Inn(G) ◁ Aut(G)</h3></div>
+    <div class="thm-card-body">
+      <p>For any φ ∈ Aut(G) and Iₐ ∈ Inn(G):</p>
+      <div class="math-block" style="margin:0.5rem 0 0;">φ ∘ Iₐ ∘ φ⁻¹  =  I_{φ(a)}  ∈  Inn(G)</div>
+      <p style="margin-top:0.6rem;margin-bottom:0">Since this holds for all φ and all Iₐ, Inn(G) ◁ Aut(G). This lets us form Out(G) = Aut(G)/Inn(G).</p>
+    </div>
+  </div>
+
+  <button class="proof-toggle" onclick="tp('pf2')"><span class="arrow">▶</span> Complete Proof — The Assignment Answer</button>
+  <div class="proof-body" id="pf2">
+    Let φ ∈ Aut(G) and Iₐ ∈ Inn(G). Compute (φ∘Iₐ∘φ⁻¹)(g) for arbitrary g ∈ G:
+    <div class="step"><strong>Step 1 — apply φ⁻¹ first:</strong><br>(φ∘Iₐ∘φ⁻¹)(g) = φ(Iₐ(φ⁻¹(g)))</div>
+    <div class="step"><strong>Step 2 — apply Iₐ:</strong><br>= φ(a · φ⁻¹(g) · a⁻¹)</div>
+    <div class="step"><strong>Step 3 — φ is a homomorphism, so it distributes:</strong><br>= φ(a) · φ(φ⁻¹(g)) · φ(a⁻¹)</div>
+    <div class="step"><strong>Step 4 — φ∘φ⁻¹ = id and φ(a⁻¹) = φ(a)⁻¹:</strong><br>= φ(a) · g · φ(a)⁻¹</div>
+    <div class="step"><strong>Step 5 — recognise this as I_{φ(a)}(g):</strong><br>= I_{φ(a)}(g)</div>
+    So φ∘Iₐ∘φ⁻¹ = I_{φ(a)} ∈ Inn(G) since φ(a) ∈ G. Therefore <strong>Inn(G) ◁ Aut(G)</strong>. ∎
+  </div>
+
+  <div class="eg-box">
+    <div class="eg-label">Example — Inn(V₄)</div>
+    <p>V₄ is abelian so Inn(V₄) = {id}. Inn(V₄) ◁ Aut(V₄) trivially. Since Aut(V₄) ≅ S₃, Out(V₄) = S₃/{id} ≅ S₃.</p>
+  </div>
+</section>
+
+<!-- § 3 SYLOW -->
+<section id="sylow">
+  <div class="section-label">§ 3</div>
+  <h2>Sylow's Theorems</h2>
+
+  <h3>P-Groups — Corrected Definition</h3>
+  <div class="fix-banner">
+    <div class="fix-label">⚠ Imprecise definition fixed — Page 4</div>
+    Your notes said "the order of every element can be written as pᵅ for some..." and left it hanging. The exponent must be made explicit and must be ≥ 0.
+  </div>
+
+  <div class="def-box">
+    <div class="def-label">Definition — P-Group (Corrected)</div>
+    <p>A group G is a <strong>p-group</strong> for a prime p if every element g ∈ G has order pᵏ for some integer <strong>k ≥ 0</strong> (where k may depend on g). If G is finite this is equivalent to |G| = pᵅ for some α ≥ 1.</p>
+  </div>
+
+  <div class="eg-box">
+    <div class="eg-label">Example — V₄ is a 2-group</div>
+    <p>o(e)=1=2⁰, o(a)=2=2¹, o(b)=2=2¹, o(ab)=2=2¹. Every order is a power of 2, so V₄ is a p-group with p=2. And |V₄|=4=2².</p>
+  </div>
+
+  <h3>Sylow P-Subgroup — Corrected Definition</h3>
+  <div class="fix-banner">
+    <div class="fix-label">⚠ Error fixed — Page 4 of your notes</div>
+    Your notes said the Sylow p-subgroup has order pᵅ where "pᵅ | n and no other power of p divides n." This is wrong — smaller powers p, p², … also divide |G|. The correct condition is that pᵅ is the <strong>highest</strong> power of p dividing |G|, meaning p^{α+1} does not divide |G|.
+  </div>
+
+  <div class="def-box">
+    <div class="def-label">Definition — Sylow P-Subgroup (Corrected)</div>
+    <p>Let G be finite and p prime. Write <span class="math">|G| = pᵅ · m</span> where <span class="math">p ∤ m</span> (so pᵅ is the exact highest power of p dividing |G|, and p^{α+1} ∤ |G|). A <strong>Sylow p-subgroup</strong> is a subgroup H with <span class="math">|H| = pᵅ</span>.</p>
+  </div>
+
+  <div class="thm-card">
+    <div class="thm-card-header"><span class="thm-badge">Theorem 11</span><h3>Sylow First — Existence</h3></div>
+    <div class="thm-card-body"><p>If G is finite and p | |G|, then G has at least one Sylow p-subgroup. More generally, for every pᵏ dividing |G|, G has a subgroup of order pᵏ.</p></div>
+  </div>
+
+  <div class="thm-card">
+    <div class="thm-card-header"><span class="thm-badge">Theorem 12</span><h3>Sylow Second — Conjugacy</h3></div>
+    <div class="thm-card-body">
+      <p>Any two Sylow p-subgroups of G are <strong>conjugate</strong> in G: if H and K are both Sylow p-subgroups then K = gHg⁻¹ for some g ∈ G.</p>
+      <p><strong>Consequence (missing from your notes):</strong> All Sylow p-subgroups are isomorphic to each other, since conjugate subgroups are always isomorphic via x ↦ gxg⁻¹.</p>
+    </div>
+  </div>
+
+  <div class="thm-card">
+    <div class="thm-card-header"><span class="thm-badge">Theorem 13</span><h3>Unique Sylow ⟺ Normal (Both Directions)</h3></div>
+    <div class="thm-card-body">
+      <p>A finite group G has a unique Sylow p-subgroup H <strong>if and only if</strong> H ◁ G.</p>
+      <div class="math-block" style="margin:0.5rem 0 0;">H unique Sylow p-subgroup  ⟺  H ◁ G</div>
+    </div>
+  </div>
+
+  <div class="fix-banner">
+    <div class="fix-label">⚠ Incomplete proof fixed — Page 5 (only one direction proved)</div>
+    Your notes proved only unique ⟹ normal. The theorem is an if-and-only-if, so you must prove both directions. The reverse direction (normal ⟹ unique) was missing. Both are below.
+  </div>
+
+  <button class="proof-toggle" onclick="tp('pf3')"><span class="arrow">▶</span> Complete Proof — Both Directions</button>
+  <div class="proof-body" id="pf3">
+    <div class="step"><strong>(⟹) Unique ⟹ Normal:</strong><br>
+    Let H be the unique Sylow p-subgroup. For any a ∈ G, aHa⁻¹ is a subgroup with |aHa⁻¹| = |H| = pᵅ, so aHa⁻¹ is also a Sylow p-subgroup. By uniqueness: aHa⁻¹ = H. Since a was arbitrary, H ◁ G. ✓</div>
+    <div class="step"><strong>(⟸) Normal ⟹ Unique:</strong><br>
+    Suppose H ◁ G. Let K be any Sylow p-subgroup. By Theorem 12, K = gHg⁻¹ for some g ∈ G. Since H ◁ G, gHg⁻¹ = H for all g. So K = H, meaning H is the only Sylow p-subgroup. ✓</div>
+    Both directions proved. ∎
+  </div>
+
+  <div class="thm-card">
+    <div class="thm-card-header"><span class="thm-badge">Theorem 14</span><h3>Sylow Third — Counting</h3></div>
+    <div class="thm-card-body">
+      <p>Let nₚ = number of Sylow p-subgroups of G, where |G| = pᵅ·m with p ∤ m. Then:</p>
+      <div class="math-block" style="margin:0.5rem 0 0;">nₚ ≡ 1 (mod p)     and     nₚ | m</div>
+      <p style="margin-top:0.6rem;margin-bottom:0">nₚ divides <strong>m</strong> — the p-free part of |G| — NOT the full order |G|.</p>
+    </div>
+  </div>
+
+  <div class="fix-banner">
+    <div class="fix-label">⚠ Error fixed — Page 5 (Theorem 14)</div>
+    Your notes said nₚ "is a factor of the order of the group." This is imprecise. nₚ divides <strong>m specifically</strong>, where |G| = pᵅ·m and p∤m. Example: |G| = 12 = 2²·3. For p=2: n₂ divides 3 (not 12). For p=3: n₃ divides 4 (not 12).
+  </div>
+
+  <div class="eg-box">
+    <div class="eg-label">Example — |G| = 12 = 2²·3</div>
+    <p>p=2: n₂ | 3 and n₂ ≡ 1 (mod 2), so n₂ ∈ {1, 3}.</p>
+    <p>p=3: n₃ | 4 and n₃ ≡ 1 (mod 3), so n₃ ∈ {1, 4}.</p>
+    <p>If n₂=1: unique Sylow 2-subgroup is normal. In A₄: n₂=1 (normal) and n₃=4 (not normal).</p>
+  </div>
+</section>
+
+<!-- § 4 CAYLEY -->
+<section id="cayley">
+  <div class="section-label">§ 4</div>
+  <h2>Cayley's Theorem</h2>
+
+  <div class="fix-banner">
+    <div class="fix-label">⚠ Missing proof added — Page 7 had statement only</div>
+    Your notes wrote only "Every group G is isomorphic to a subgroup of the symmetric group Sᴳ." No proof. For an exam you need the full argument via left multiplication maps.
+  </div>
+
+  <div class="thm-card">
+    <div class="thm-card-header"><span class="thm-badge">Cayley's Theorem</span><h3>Every Group is a Permutation Group</h3></div>
+    <div class="thm-card-body">
+      <p>Every group G is isomorphic to a subgroup of Sym(G). If |G| = n, then G embeds into Sₙ.</p>
+      <div class="math-block" style="margin:0.5rem 0 0;">G  ≅  subgroup of Sym(G)</div>
+    </div>
+  </div>
+
+  <button class="proof-toggle" onclick="tp('pf4')"><span class="arrow">▶</span> Full Proof</button>
+  <div class="proof-body" id="pf4">
+    <div class="step"><strong>Step 1 — Define left multiplication maps.</strong><br>For each a ∈ G define λₐ : G → G by λₐ(g) = ag. This is a bijection (inverse: λ_{a⁻¹}), so λₐ ∈ Sym(G).</div>
+    <div class="step"><strong>Step 2 — Define φ : G → Sym(G) by φ(a) = λₐ. Show it is a homomorphism.</strong><br>φ(ab)(g) = λ_{ab}(g) = (ab)g = a(bg) = λₐ(λ_b(g)) = (φ(a)∘φ(b))(g). So φ(ab) = φ(a)∘φ(b). ✓</div>
+    <div class="step"><strong>Step 3 — φ is injective.</strong><br>Suppose φ(a) = id. Then λₐ = id, so ag = g for all g. Set g = e: a = e. So ker(φ) = {e}, hence φ injective. ✓</div>
+    <div class="step"><strong>Step 4 — Conclusion.</strong><br>By First Isomorphism Theorem: G ≅ G/ker(φ) = G/{e} ≅ Im(φ) ≤ Sym(G). ∎</div>
+  </div>
+
+  <div class="eg-box">
+    <div class="eg-label">Example — Embedding ℤ₃ into S₃</div>
+    <p>λ₀ = identity, λ₁ = (0 1 2) (3-cycle), λ₂ = (0 2 1) (3-cycle). These three permutations form a subgroup of S₃ isomorphic to ℤ₃. ✓</p>
+  </div>
+
+  <div class="note-box">
+    <strong>Limitation:</strong> Cayley embeds G into S_{|G|}, which may be far too large. The embedding is not necessarily efficient.
+  </div>
+</section>
+
+<!-- § 5 CONJUGATION ISO -->
+<section id="conj-iso">
+  <div class="section-label">§ 5</div>
+  <h2>Conjugation is an Automorphism — Complete Proof</h2>
+
+  <div class="fix-banner">
+    <div class="fix-label">⚠ Three errors fixed — Pages 5–6 of your notes</div>
+    <strong>Error 1:</strong> Your notes labelled the computation φ(ab) = φ(a)φ(b) as "showing surjectivity" — that is the <em>homomorphism property</em>, not surjectivity. These are different things.<br><br>
+    <strong>Error 2:</strong> Injectivity was never shown.<br><br>
+    <strong>Error 3:</strong> Your conclusion said "this shows the bijective property, hence it is an isomorphism." Showing φ(ab) = φ(a)φ(b) only proves homomorphism. Bijectivity requires separate proofs of injectivity and surjectivity — both were missing. All four parts are proved below.
+  </div>
+
+  <p><strong>Problem (from your notes):</strong> Let G be a finite group. Fix g ∈ G. Define φ : G → G by φ(x) = gxg⁻¹. Show φ is an isomorphism of G onto G.</p>
+
+  <div class="thm-card">
+    <div class="thm-card-header"><span class="thm-badge">Theorem</span><h3>φ_g : x ↦ gxg⁻¹ is an Automorphism of G</h3></div>
+    <div class="thm-card-body"><p>For any fixed g ∈ G, the conjugation map φ(x) = gxg⁻¹ is a bijective homomorphism G → G, i.e. an element of Aut(G).</p></div>
+  </div>
+
+  <button class="proof-toggle" onclick="tp('pf5')"><span class="arrow">▶</span> Full Proof — All Four Parts</button>
+  <div class="proof-body" id="pf5">
+    Fix g ∈ G. Define φ : G → G by φ(x) = gxg⁻¹.
+    <div class="step"><strong>Part 1 — Homomorphism property:</strong><br>
+    For a, b ∈ G: φ(ab) = g(ab)g⁻¹ = ga·(g⁻¹g)·bg⁻¹ = (gag⁻¹)(gbg⁻¹) = φ(a)·φ(b). ✓<br>
+    <em>(Note: your notes computed this correctly on pages 5–6 but incorrectly labelled it as "surjectivity.")</em></div>
+    <div class="step"><strong>Part 2 — Injective (missing from your notes):</strong><br>
+    Suppose φ(a) = φ(b): gag⁻¹ = gbg⁻¹. Multiply left by g⁻¹ and right by g: a = b. So φ is injective. Alternatively: ker(φ) = {x : gxg⁻¹ = e} = {x : x = g⁻¹eg = e} = {e}. ✓</div>
+    <div class="step"><strong>Part 3 — Surjective (missing from your notes):</strong><br>
+    For any y ∈ G, let x = g⁻¹yg. Then φ(x) = g(g⁻¹yg)g⁻¹ = (gg⁻¹)y(gg⁻¹) = y. So every y is hit. ✓</div>
+    <div class="step"><strong>Part 4 — Conclusion:</strong><br>
+    φ is a homomorphism (Part 1) + injective (Part 2) + surjective (Part 3) ⟹ φ is an automorphism of G. ∎</div>
+  </div>
+
+  <div class="correct-box">
+    <div class="correct-label">✓ Exam strategy</div>
+    To prove something is an isomorphism you must show three things separately: (1) homomorphism, (2) injective, (3) surjective. Never conclude "bijective" from just the homomorphism step.
+  </div>
+
+  <div class="note-box">
+    <strong>Connection to normality:</strong> N ◁ G if and only if N is closed under all conjugation automorphisms: gNg⁻¹ = N for all g ∈ G.
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- § 6 ERROR LOG -->
+<section id="errors">
+  <div class="section-label">§ 6</div>
+  <h2>Complete Error Log — Your Notes vs Corrected</h2>
+  <table class="data-table">
+    <tr><th>Page</th><th>What your notes said</th><th>Status</th><th>Correction</th></tr>
+    <tr><td>p.1</td><td>Iₐ(g) = agg⁻¹</td><td class="err">✗ Wrong</td><td>Must be Iₐ(g) = aga⁻¹</td></tr>
+    <tr><td>p.1</td><td>aba⁻¹ = b·a·a⁻¹ with no justification for swapping a and b</td><td class="err">✗ Gap</td><td>Must state: "V₄ is abelian so ab = ba"</td></tr>
+    <tr><td>p.1</td><td>Inserted aa⁻¹ = e in homomorphism proof then page ended</td><td class="err">✗ Incomplete</td><td>Insert a⁻¹a in the middle: ag₁(a⁻¹a)g₂a⁻¹ = (ag₁a⁻¹)(ag₂a⁻¹)</td></tr>
+    <tr><td>p.2</td><td>Crossed-out line left unresolved</td><td class="err">✗ Unclear</td><td>Should be: Iₐ∘I_{b⁻¹}(g) = I_{ab⁻¹}(g) ∈ Inn(G)</td></tr>
+    <tr><td>p.2</td><td>Concluded "I(G) is a subgroup of A(G)"</td><td class="err">✗ Wrong conclusion</td><td>Theorem requires normal subgroup. Normality proof was entirely absent.</td></tr>
+    <tr><td>p.3</td><td>Assignment left blank</td><td class="err">✗ Missing</td><td>Full proof: φ∘Iₐ∘φ⁻¹ = I_{φ(a)} ∈ Inn(G). See § 2 above.</td></tr>
+    <tr><td>p.4</td><td>P-group: "order pᵅ for some..." (incomplete)</td><td class="err">✗ Imprecise</td><td>|g| = pᵏ for some integer k ≥ 0 (k depends on g)</td></tr>
+    <tr><td>p.4</td><td>Sylow subgroup: "no other power of p divides n"</td><td class="err">✗ Wrong</td><td>Smaller powers still divide |G|. Correct: p^{α+1} ∤ |G|</td></tr>
+    <tr><td>p.4</td><td>Theorem 12 stated with no proof, no consequence listed</td><td class="err">✗ Incomplete</td><td>Key consequence: all Sylow p-subgroups are isomorphic</td></tr>
+    <tr><td>p.5</td><td>Theorem 13 proof shows only unique ⟹ normal</td><td class="err">✗ Half proved</td><td>Must also prove normal ⟹ unique. Both directions in § 3.</td></tr>
+    <tr><td>p.5</td><td>Theorem 14: nₚ "factor of order of the group"</td><td class="err">✗ Imprecise</td><td>nₚ | m where |G| = pᵅ·m, p∤m. It divides m, not |G|.</td></tr>
+    <tr><td>p.5–6</td><td>φ(ab)=φ(a)φ(b) labelled as "surjectivity"</td><td class="err">✗ Wrong label</td><td>That is the homomorphism property. Surjectivity: show every y = φ(g⁻¹yg).</td></tr>
+    <tr><td>p.6</td><td>"This shows bijective property, hence isomorphic"</td><td class="err">✗ Wrong conclusion</td><td>Homomorphism ≠ bijective. Need separate injectivity and surjectivity.</td></tr>
+    <tr><td>p.7</td><td>Cayley's theorem: statement only, no proof</td><td class="err">✗ Missing</td><td>Full proof via left multiplication λₐ(g) = ag. See § 4.</td></tr>
+  </table>
+</section>
+
+<hr class="divider">
+
+<!-- § 7 SUMMARY -->
+<section id="summary">
+  <div class="section-label">§ 7</div>
+  <h2>Summary — Must-Know Theorems at a Glance</h2>
+  <table class="data-table">
+    <tr><th>Theorem</th><th>Statement</th><th>Exam Tip</th></tr>
+    <tr><td>Inner Auto</td><td>Iₐ(g) = aga⁻¹ is an automorphism</td><td>Insert a⁻¹a in the middle for homo proof</td></tr>
+    <tr><td>Inn(G) ≤ Aut(G)</td><td>Iₐ∘I_b = I_{ab}; I_e = id; (Iₐ)⁻¹ = I_{a⁻¹}</td><td>Check closure, identity, inverse</td></tr>
+    <tr><td>Inn(G) ◁ Aut(G)</td><td>φ∘Iₐ∘φ⁻¹ = I_{φ(a)} ∈ Inn(G)</td><td>Expand left, distribute φ, cancel φ∘φ⁻¹</td></tr>
+    <tr><td>Inn(G) ≅ G/Z(G)</td><td>Kernel of a ↦ Iₐ is Z(G)</td><td>Abelian G ⟹ Inn(G) = {id}</td></tr>
+    <tr><td>Sylow 1st</td><td>G has a Sylow p-subgroup of order pᵅ</td><td>pᵅ = exact highest power of p in |G|</td></tr>
+    <tr><td>Sylow 2nd</td><td>All Sylow p-subgroups are conjugate (hence isomorphic)</td><td>Uniqueness ⟺ normality</td></tr>
+    <tr><td>Sylow 3rd</td><td>nₚ ≡ 1 (mod p) and nₚ | m (not |G|)</td><td>|G| = pᵅ·m; nₚ divides m specifically</td></tr>
+    <tr><td>Unique ⟺ Normal</td><td>H unique Sylow ⟺ H ◁ G</td><td>Prove BOTH directions (it is iff)</td></tr>
+    <tr><td>Cayley</td><td>G ≅ subgroup of Sym(G) via λₐ(g) = ag</td><td>Injectivity: λₐ = id ⟹ a = e</td></tr>
+    <tr><td>Conjugation Isom.</td><td>φ(x) = gxg⁻¹ ∈ Aut(G)</td><td>Prove homo + injective + surjective separately</td></tr>
+  </table>
+</section>
+
+</div>
+<script>
+window.addEventListener('scroll',()=>{
+  const s=document.body.scrollTop||document.documentElement.scrollTop;
+  const h=document.documentElement.scrollHeight-document.documentElement.clientHeight;
+  document.getElementById('progressBar').style.width=(s/h*100)+'%';
+});
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:0.07});
+document.querySelectorAll('section').forEach(s=>obs.observe(s));
+function tp(id){
+  const b=document.getElementById(id);
+  const btn=b.previousElementSibling;
+  b.classList.toggle('open');
+  btn.classList.toggle('open');
+}
+</script>
+</body>
+</html>
