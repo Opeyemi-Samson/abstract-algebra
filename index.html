@@ -6,77 +6,59 @@
 <title>Math Notes</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg:#0c0e0f; --surface:#131618; --raised:#1a1e21; --border:#252a2e;
-    --muted:#4a5560; --body:#8a9aa8; --text:#d8e2ea; --bright:#eef4f8;
-    --amber:#e8a020; --amber-dim:#7a5010; --teal:#2ec4b6; --rose:#e05c6a;
-    --indigo:#6e8efb; --green:#4caf7d; --purple:#a07ef0;
-  }
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-  html{scroll-behavior:smooth;}
-  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.7;min-height:100vh;overflow-x:hidden;}
-  body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.35;}
-
-  .hero{position:relative;padding:6rem 2rem 5rem;text-align:center;overflow:hidden;}
-  .hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%);opacity:0.4;}
-  .hero-glow{position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(232,160,32,0.12) 0%,transparent 70%);pointer-events:none;}
-  .hero-eyebrow{font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--amber);margin-bottom:1.2rem;position:relative;animation:fadeUp 0.7s ease both;}
-  .hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(4rem,12vw,8rem);letter-spacing:0.04em;line-height:0.9;color:var(--bright);position:relative;animation:fadeUp 0.7s 0.1s ease both;}
-  .hero h1 span{display:block;color:var(--amber);}
-  .hero-sub{margin-top:1.4rem;font-size:1rem;color:var(--body);max-width:480px;margin-left:auto;margin-right:auto;position:relative;animation:fadeUp 0.7s 0.2s ease both;font-style:italic;}
-  .hero-stats{display:flex;justify-content:center;gap:2.5rem;margin-top:3rem;position:relative;animation:fadeUp 0.7s 0.3s ease both;}
-  .stat{text-align:center;}
-  .stat-num{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--bright);line-height:1;}
-  .stat-label{font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-top:0.2rem;}
-
-  .topbar{position:sticky;top:0;z-index:100;background:rgba(12,14,15,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;}
-  .topbar-logo{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.1em;color:var(--amber);text-decoration:none;padding:0.9rem 1rem 0.9rem 0;margin-right:1rem;border-right:1px solid var(--border);}
-  .topbar-links{display:flex;gap:0;overflow-x:auto;flex:1;}
-  .topbar-links a{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:0.9rem 1rem;border-bottom:2px solid transparent;white-space:nowrap;transition:color 0.2s,border-color 0.2s;}
-  .topbar-links a:hover{color:var(--text);border-bottom-color:var(--amber);}
-
-  main{max-width:1100px;margin:0 auto;padding:4rem 2rem 8rem;}
-
-  .section-head{display:flex;align-items:baseline;gap:1rem;margin-bottom:2rem;padding-bottom:0.8rem;border-bottom:1px solid var(--border);animation:fadeUp 0.6s ease both;}
-  .section-head h2{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--bright);font-weight:400;}
-  .section-head .section-tag{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);}
-
-  .notes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.2rem;margin-bottom:4rem;}
-
-  .note-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.6rem;text-decoration:none;color:inherit;display:flex;flex-direction:column;position:relative;overflow:hidden;transition:border-color 0.2s,transform 0.2s,box-shadow 0.2s;animation:fadeUp 0.5s ease both;}
-  .note-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--card-accent,var(--amber));transform:scaleX(0);transform-origin:left;transition:transform 0.3s ease;}
-  .note-card:hover{border-color:var(--card-accent,var(--amber));transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.4);}
-  .note-card:hover::before{transform:scaleX(1);}
-
-  .card-topic{font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--card-accent,var(--amber));margin-bottom:0.6rem;}
-  .card-title{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--bright);line-height:1.25;margin-bottom:0.7rem;font-weight:400;}
-  .card-desc{font-size:0.85rem;color:var(--body);line-height:1.6;flex:1;margin-bottom:1.2rem;}
-  .card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:1rem;border-top:1px solid var(--border);}
-  .card-tags{display:flex;flex-wrap:wrap;gap:0.4rem;}
-  .tag{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.05em;padding:0.2rem 0.55rem;border-radius:3px;background:var(--raised);color:var(--muted);text-transform:uppercase;}
-  .card-arrow{color:var(--muted);font-size:1.1rem;transition:color 0.2s,transform 0.2s;}
-  .note-card:hover .card-arrow{color:var(--card-accent,var(--amber));transform:translateX(4px);}
-
-  .topic-strip{display:flex;flex-wrap:wrap;gap:0.7rem;margin-bottom:3rem;animation:fadeUp 0.6s 0.1s ease both;}
-  .topic-pill{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.45rem 1rem;border:1px solid var(--border);border-radius:999px;color:var(--muted);cursor:pointer;transition:all 0.2s;background:transparent;}
-  .topic-pill:hover,.topic-pill.active{border-color:var(--amber);color:var(--amber);background:rgba(232,160,32,0.07);}
-
-  .about-strip{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:2.5rem;display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center;animation:fadeUp 0.6s ease both;}
-  @media(max-width:600px){.about-strip{grid-template-columns:1fr;}.notes-grid{grid-template-columns:1fr;}}
-  .about-strip h3{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--bright);margin-bottom:0.6rem;font-weight:400;}
-  .about-strip p{font-size:0.88rem;color:var(--body);max-width:520px;}
-  .about-badge{text-align:center;flex-shrink:0;}
-  .about-badge .big{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:var(--amber);line-height:1;display:block;}
-  .about-badge .small{font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);}
-
-  footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);}
-
-  @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
-  @media(max-width:640px){.hero{padding:4rem 1.5rem 3rem;}.hero-stats{gap:1.5rem;}main{padding:2.5rem 1.2rem 5rem;}}
+:root{--bg:#0c0e0f;--surface:#131618;--raised:#1a1e21;--border:#252a2e;--muted:#4a5560;--body:#8a9aa8;--text:#d8e2ea;--bright:#eef4f8;--amber:#e8a020;--teal:#2ec4b6;--rose:#e05c6a;--indigo:#6e8efb;--green:#4caf7d;--purple:#a07ef0;--gold:#e8c040;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.7;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.35;}
+.hero{position:relative;padding:6rem 2rem 5rem;text-align:center;overflow:hidden;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%);opacity:0.4;}
+.hero-glow{position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(232,160,32,0.12) 0%,transparent 70%);pointer-events:none;}
+.hero-eyebrow{font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--amber);margin-bottom:1.2rem;position:relative;animation:fadeUp 0.7s ease both;}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(4rem,12vw,8rem);letter-spacing:0.04em;line-height:0.9;color:var(--bright);position:relative;animation:fadeUp 0.7s 0.1s ease both;}
+.hero h1 span{display:block;color:var(--amber);}
+.hero-sub{margin-top:1.4rem;font-size:1rem;color:var(--body);max-width:480px;margin-left:auto;margin-right:auto;position:relative;animation:fadeUp 0.7s 0.2s ease both;font-style:italic;}
+.hero-stats{display:flex;justify-content:center;gap:2.5rem;margin-top:3rem;position:relative;animation:fadeUp 0.7s 0.3s ease both;}
+.stat{text-align:center;}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--bright);line-height:1;}
+.stat-label{font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-top:0.2rem;}
+.topbar{position:sticky;top:0;z-index:100;background:rgba(12,14,15,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;}
+.topbar-logo{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.1em;color:var(--amber);text-decoration:none;padding:0.9rem 1rem 0.9rem 0;margin-right:1rem;border-right:1px solid var(--border);}
+.topbar-links{display:flex;gap:0;overflow-x:auto;flex:1;}
+.topbar-links a{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:0.9rem 1rem;border-bottom:2px solid transparent;white-space:nowrap;transition:color 0.2s,border-color 0.2s;}
+.topbar-links a:hover{color:var(--text);border-bottom-color:var(--amber);}
+main{max-width:1100px;margin:0 auto;padding:4rem 2rem 8rem;}
+.section-head{display:flex;align-items:baseline;gap:1rem;margin-bottom:2rem;padding-bottom:0.8rem;border-bottom:1px solid var(--border);}
+.section-head h2{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--bright);font-weight:400;}
+.section-head .section-tag{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);}
+.notes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.2rem;margin-bottom:4rem;}
+.note-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.6rem;text-decoration:none;color:inherit;display:flex;flex-direction:column;position:relative;overflow:hidden;transition:border-color 0.2s,transform 0.2s,box-shadow 0.2s;animation:fadeUp 0.5s ease both;}
+.note-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--card-accent,var(--amber));transform:scaleX(0);transform-origin:left;transition:transform 0.3s ease;}
+.note-card:hover{border-color:var(--card-accent,var(--amber));transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.4);}
+.note-card:hover::before{transform:scaleX(1);}
+.card-topic{font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--card-accent,var(--amber));margin-bottom:0.6rem;}
+.card-title{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--bright);line-height:1.25;margin-bottom:0.7rem;font-weight:400;}
+.card-desc{font-size:0.85rem;color:var(--body);line-height:1.6;flex:1;margin-bottom:1.2rem;}
+.card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:1rem;border-top:1px solid var(--border);}
+.card-tags{display:flex;flex-wrap:wrap;gap:0.4rem;}
+.tag{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.05em;padding:0.2rem 0.55rem;border-radius:3px;background:var(--raised);color:var(--muted);text-transform:uppercase;}
+.card-arrow{color:var(--muted);font-size:1.1rem;transition:color 0.2s,transform 0.2s;}
+.note-card:hover .card-arrow{color:var(--card-accent,var(--amber));transform:translateX(4px);}
+.topic-strip{display:flex;flex-wrap:wrap;gap:0.7rem;margin-bottom:3rem;}
+.topic-pill{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.45rem 1rem;border:1px solid var(--border);border-radius:999px;color:var(--muted);cursor:pointer;transition:all 0.2s;background:transparent;}
+.topic-pill:hover,.topic-pill.active{border-color:var(--amber);color:var(--amber);background:rgba(232,160,32,0.07);}
+.about-strip{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:2.5rem;display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center;}
+@media(max-width:600px){.about-strip{grid-template-columns:1fr;}.notes-grid{grid-template-columns:1fr;}}
+.about-strip h3{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--bright);margin-bottom:0.6rem;font-weight:400;}
+.about-strip p{font-size:0.88rem;color:var(--body);max-width:520px;}
+.about-badge .big{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:var(--amber);line-height:1;display:block;text-align:center;}
+.about-badge .small{font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);display:block;text-align:center;}
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+@media(max-width:640px){.hero{padding:4rem 1.5rem 3rem;}.hero-stats{gap:1.5rem;}main{padding:2.5rem 1.2rem 5rem;}}
 </style>
 </head>
 <body>
-
 <nav class="topbar">
   <a class="topbar-logo" href="index.html">MN</a>
   <div class="topbar-links">
@@ -85,7 +67,6 @@
     <a href="#about">About</a>
   </div>
 </nav>
-
 <header class="hero">
   <div class="hero-grid"></div>
   <div class="hero-glow"></div>
@@ -93,40 +74,35 @@
   <h1>Math<span>Notes</span></h1>
   <p class="hero-sub">Structured, self-contained notes on pure mathematics — built to last.</p>
   <div class="hero-stats">
-    <div class="stat"><div class="stat-num" id="noteCount">7</div><div class="stat-label">Notes</div></div>
-    <div class="stat"><div class="stat-num">2</div><div class="stat-label">Topics</div></div>
+    <div class="stat"><div class="stat-num">8</div><div class="stat-label">Notes</div></div>
+    <div class="stat"><div class="stat-num">3</div><div class="stat-label">Topics</div></div>
     <div class="stat"><div class="stat-num">∞</div><div class="stat-label">To Learn</div></div>
   </div>
 </header>
-
 <main>
-
   <div id="topics" style="margin-bottom:0.5rem">
     <div class="section-head" style="margin-bottom:1.2rem">
-      <h2>Browse by Topic</h2>
-      <span class="section-tag">Filter</span>
+      <h2>Browse by Topic</h2><span class="section-tag">Filter</span>
     </div>
   </div>
-
   <div class="topic-strip" id="topicStrip">
     <button class="topic-pill active" onclick="filterCards('all',this)">All</button>
     <button class="topic-pill" onclick="filterCards('abstract-algebra',this)">Abstract Algebra</button>
     <button class="topic-pill" onclick="filterCards('ring-theory',this)">Ring Theory</button>
     <button class="topic-pill" onclick="filterCards('field-theory',this)">Field Theory</button>
+    <button class="topic-pill" onclick="filterCards('reference',this)">Reference</button>
   </div>
-
   <div id="notes" style="scroll-margin-top:4rem;">
     <div class="section-head">
       <h2>All Notes</h2>
-      <span class="section-tag" id="cardCount">7 notes</span>
+      <span class="section-tag" id="cardCount">8 notes</span>
     </div>
-
     <div class="notes-grid" id="notesGrid">
 
       <a href="notes/normal-subgroups.html" class="note-card" data-topic="abstract-algebra" style="--card-accent:var(--amber);animation-delay:0.05s">
         <div class="card-topic">Abstract Algebra · Group Theory</div>
         <div class="card-title">Normal Subgroups</div>
-        <div class="card-desc">Conjugation invariance, coset equivalences, quotient construction, and the Jordan–Hölder theorem. Includes interactive coset visualizer and quiz.</div>
+        <div class="card-desc">Conjugation invariance, coset equivalences, index-2 theorem, quotient construction and Jordan–Hölder. Interactive coset visualizer and quiz.</div>
         <div class="card-footer">
           <div class="card-tags"><span class="tag">Groups</span><span class="tag">Cosets</span><span class="tag">Conjugation</span><span class="tag">Interactive</span></div>
           <span class="card-arrow">→</span>
@@ -156,7 +132,7 @@
       <a href="notes/isomorphism-theorems.html" class="note-card" data-topic="abstract-algebra" style="--card-accent:var(--green);animation-delay:0.20s">
         <div class="card-topic">Abstract Algebra · Group Theory</div>
         <div class="card-title">Isomorphism Theorems</div>
-        <div class="card-desc">All three isomorphism theorems with full proofs — the First (factorisation), Second (diamond), and Third (cancellation) — plus the correspondence theorem and applications.</div>
+        <div class="card-desc">All three isomorphism theorems with full proofs — First (factorisation), Second (diamond), Third (cancellation) — plus the correspondence theorem.</div>
         <div class="card-footer">
           <div class="card-tags"><span class="tag">1st Thm</span><span class="tag">2nd Thm</span><span class="tag">3rd Thm</span><span class="tag">Proofs</span></div>
           <span class="card-arrow">→</span>
@@ -166,7 +142,7 @@
       <a href="notes/ideals.html" class="note-card" data-topic="ring-theory" style="--card-accent:var(--rose);animation-delay:0.25s">
         <div class="card-topic">Abstract Algebra · Ring Theory</div>
         <div class="card-title">Ideals</div>
-        <div class="card-desc">Left, right, and two-sided ideals; principal ideals and PIDs; operations on ideals; prime and maximal ideals characterised via quotient rings. Chinese Remainder Theorem.</div>
+        <div class="card-desc">Left, right, two-sided ideals; principal ideals and PIDs; operations on ideals; prime and maximal ideals characterised via quotient rings. Chinese Remainder Theorem.</div>
         <div class="card-footer">
           <div class="card-tags"><span class="tag">Rings</span><span class="tag">Prime</span><span class="tag">Maximal</span><span class="tag">PID</span></div>
           <span class="card-arrow">→</span>
@@ -176,7 +152,7 @@
       <a href="notes/quotient-rings.html" class="note-card" data-topic="ring-theory" style="--card-accent:var(--teal);animation-delay:0.30s">
         <div class="card-topic">Abstract Algebra · Ring Theory</div>
         <div class="card-title">Quotient Rings</div>
-        <div class="card-desc">Construction of R/I, ring homomorphisms and their kernels, isomorphism theorems for rings. Key example: ℝ[x]/⟨x²+1⟩ ≅ ℂ. Dual numbers and field extensions via quotients.</div>
+        <div class="card-desc">Construction of R/I, ring homomorphisms and kernels, isomorphism theorems for rings. Star example: ℝ[x]/⟨x²+1⟩ ≅ ℂ. Dual numbers and field extensions via quotients.</div>
         <div class="card-footer">
           <div class="card-tags"><span class="tag">Factor Rings</span><span class="tag">Homo</span><span class="tag">ℂ from ℝ[x]</span></div>
           <span class="card-arrow">→</span>
@@ -186,9 +162,19 @@
       <a href="notes/field-extensions.html" class="note-card" data-topic="field-theory" style="--card-accent:var(--indigo);animation-delay:0.35s">
         <div class="card-topic">Abstract Algebra · Field Theory</div>
         <div class="card-title">Field Extensions</div>
-        <div class="card-desc">Degree of an extension, algebraic vs transcendental elements, minimal polynomials, simple extensions, splitting fields, the Tower Law, and classical constructibility impossibility proofs.</div>
+        <div class="card-desc">Degree [E:F], algebraic vs transcendental elements, minimal polynomials, simple extensions, splitting fields, Tower Law, and classical constructibility impossibility proofs.</div>
         <div class="card-footer">
           <div class="card-tags"><span class="tag">Degree</span><span class="tag">Algebraic</span><span class="tag">Tower Law</span><span class="tag">Galois</span></div>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="notes/must-know-theorems.html" class="note-card" data-topic="reference" style="--card-accent:var(--gold);animation-delay:0.40s">
+        <div class="card-topic">Reference · All Topics</div>
+        <div class="card-title">Must-Know Theorems</div>
+        <div class="card-desc">Inner automorphisms, Inn(G) ◁ Aut(G) (with the full assignment proof), Sylow's three theorems, Cayley's theorem, and the conjugation isomorphism — all errors from the handwritten notes corrected with a full error log.</div>
+        <div class="card-footer">
+          <div class="card-tags"><span class="tag">Sylow</span><span class="tag">Cayley</span><span class="tag">Inn(G)</span><span class="tag">Exam Ready</span></div>
           <span class="card-arrow">→</span>
         </div>
       </a>
@@ -197,43 +183,32 @@
   </div>
 
   <div id="about" style="scroll-margin-top:4rem;">
-    <div class="section-head">
-      <h2>About This Site</h2>
-      <span class="section-tag">Info</span>
-    </div>
+    <div class="section-head"><h2>About This Site</h2><span class="section-tag">Info</span></div>
     <div class="about-strip">
       <div>
         <h3>A personal mathematics library</h3>
         <p>Each note is a fully self-contained HTML file — no frameworks, no build step, no internet required beyond fonts. Every note includes formal definitions, worked examples, collapsible proofs, and interactive quizzes.</p>
         <p style="margin-top:0.7rem">To add a new note: drop an HTML file into the <code style="font-family:'DM Mono',monospace;font-size:0.82em;color:var(--amber)">notes/</code> folder and add a card to <code style="font-family:'DM Mono',monospace;font-size:0.82em;color:var(--amber)">index.html</code>.</p>
       </div>
-      <div class="about-badge">
-        <span class="big">∇</span>
-        <span class="small">Pure Maths</span>
-      </div>
+      <div class="about-badge"><span class="big">∇</span><span class="small">Pure Maths</span></div>
     </div>
   </div>
-
 </main>
-
 <footer>Math Notes &nbsp;·&nbsp; Built with HTML, CSS &amp; curiosity</footer>
-
 <script>
-function filterCards(topic, btn) {
-  document.querySelectorAll('.topic-pill').forEach(p => p.classList.remove('active'));
+function filterCards(topic,btn){
+  document.querySelectorAll('.topic-pill').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
-  const cards = document.querySelectorAll('.note-card');
-  let visible = 0;
-  cards.forEach(card => {
-    const match = topic === 'all' || card.dataset.topic === topic;
-    card.style.display = match ? '' : 'none';
-    if (match) visible++;
+  const cards=document.querySelectorAll('.note-card');
+  let visible=0;
+  cards.forEach(card=>{
+    const match=topic==='all'||card.dataset.topic===topic;
+    card.style.display=match?'':'none';
+    if(match)visible++;
   });
-  document.getElementById('cardCount').textContent = visible === 1 ? '1 note' : visible + ' notes';
+  document.getElementById('cardCount').textContent=visible===1?'1 note':visible+' notes';
 }
-document.querySelectorAll('.note-card').forEach((card, i) => {
-  card.style.animationDelay = (0.05 * i) + 's';
-});
+document.querySelectorAll('.note-card').forEach((card,i)=>{card.style.animationDelay=(0.05*i)+'s';});
 </script>
 </body>
 </html>
